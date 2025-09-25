@@ -1,0 +1,27 @@
+name: Build Feeds
+
+on:
+  schedule:
+    - cron: "0 5 * * *"   # Todos los días a las 05:00 UTC
+  workflow_dispatch:      # Permite ejecutarlo manualmente también
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run script
+        run: python scripts/build_feeds.py
+      - name: Commit and push
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add data/*.xml
+          git commit -m "Update feeds" || echo "No changes"
+          git push
