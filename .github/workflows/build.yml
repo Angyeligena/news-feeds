@@ -3,7 +3,7 @@ name: Build Feeds
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 10 * * *"   # 10:00 UTC -> normalmente corresponde a 05:00 panama (ajusta según DST)
+    - cron: "0 10 * * *"   # Todos los días a las 10:00 UTC
 
 permissions:
   contents: write
