@@ -15,30 +15,30 @@ REQUEST_TIMEOUT = 25
 RETRIES = 2
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; AngieNewsBot/1.1; +https://github.com/)"}
 
-# === FUENTES (tus links) ===
-SOURCES = {
+# =================== FUENTES / CUOTAS / PREFIJO ===================
+# strict_prefix: True => exige que el path del enlace empiece por el path base.
+# allow_regex: patrones "whitelist" adicionales para aceptar enlaces del mismo host (cuando strict=False).
+SOURCES_BY_COUNTRY = {
     "venezuela": [
-        "https://www.elnacional.com/venezuela/",
-        "https://talcualdigital.com/noticias/",
-        "https://efectococuyo.com/politica/",
+        # El Nacional: prefijo /venezuela/ ESTRICTO
+        ("https://www.elnacional.com/venezuela/", 5, True,  None),
+        # TalCual: enlaces van a /politica/, /nacional/, /202x/ → host igual, sin prefijo estricto, con whitelist
+        ("https://talcualdigital.com/noticias/",  5, False, r"(^/20\d{2}/|/politica/|/nacional/|/venezuela/)"),
+        # Efecto Cocuyo: similar → host igual, whitelist
+        ("https://efectococuyo.com/politica/",    5, False, r"(^/20\d{2}/|/politica/|/venezuela/|/economia/)"),
     ],
     "panama": [
-        "https://www.prensa.com/",
-        "https://www.laestrella.com.pa/panama",
+        ("https://www.prensa.com/",               5, True,  None),
+        ("https://www.laestrella.com.pa/panama",  5, True,  None),
     ],
     "dominicana": [
-        "https://www.diariolibre.com/rss/portada.xml",
-        "https://listindiario.com/la-republica",
-        "https://www.elcaribe.com.do/seccion/panorama/pais/",
-        "https://eldinero.com.do/",
+        ("https://www.diariolibre.com/actualidad/nacional", 3, True,  None),
+        ("https://listindiario.com/la-republica",       3, True,  None),
+        # El Caribe: prefijo estricto /seccion/panorama/pais/
+        ("https://www.elcaribe.com.do/seccion/panorama/pais/", 3, True,  None),
+        ("https://eldinero.com.do/",                     3, True,  None),
     ],
 }
-
-# Límite total por país
-LIMITS = {"venezuela": 10, "panama": 10, "dominicana": 10}
-
-# Cuota máxima por dominio dentro de cada país (tope duro por source)
-MAX_PER_DOMAIN = 4
 
 # Selectores por dominio (para scraping HTML)
 SITE_SELECTORS = {
@@ -64,6 +64,53 @@ SITE_SELECTORS = {
     "www.elcaribe.com.do": ["h2 a[href]", "article h2 a", "a.post-title[href]"],
     "eldinero.com.do": ["h2 a[href]", "article h2 a", "a.post-title[href]"],
 }
+# =================== SELECTORES REFORZADOS ===================
+SITE_SELECTORS = {
+    # Venezuela
+    "www.elnacional.com": [
+        "article h2 a[href]", "article h3 a[href]", "h1 a[href]", "h2 a[href]",
+        ".headline a[href]", ".post-title a[href]", ".card__link[href]", ".entry-title a[href]"
+    ],
+    "talcualdigital.com": [
+        "h2.entry-title a[href]", "article h2 a[href]", "div.post-title h2 a[href]",
+        ".jeg_post_title a[href]", ".post-title a[href]", "h3 a[href]", ".entry-title a[href]"
+    ],
+    "efectococuyo.com": [
+        "article h2 a[href]", "h2 a[href]", "h3 a[href]", ".jeg_post_title a[href]",
+        ".post-title a[href]", ".entry-title a[href]"
+    ],
+    # Panamá
+    "www.prensa.com": [
+        "article h2 a[href]", "h1 a[href]", "h2 a[href]", ".headline a[href]", ".entry-title a[href]"
+    ],
+    "www.laestrella.com.pa": [
+        "article h2 a[href]", "h1 a[href]", "h2 a[href]", ".headline a[href]", ".entry-title a[href]"
+    ],
+    # Dominicana
+    "listindiario.com": [
+        "article h2 a[href]", "h2 a[href]", "h3 a[href]", ".post-title a[href]", ".headline a[href]", ".entry-title a[href]"
+    ],
+    "www.elcaribe.com.do": [
+        # Varias plantillas de El Caribe
+        "article h2 a[href]", "h2.entry-title a[href]", "h3.entry-title a[href]",
+        ".post-title a[href]", ".td-module-title a[href]", ".c-post-card a[href]",
+        ".entry-title a[href]", ".headline a[href]"
+    ],
+    "eldinero.com.do": [
+        "article h2 a[href]", "h2 a[href]", "h3 a[href]", "a.post-title[href]", ".post-title a[href]", ".entry-title a[href]"
+    ],
+}
+
+# =================== FILTROS ===================
+# Paths irrelevantes típicos que debemos excluir
+BAD_PATH_SEGMENTS = (
+    "/tag/", "/etiqueta/", "/autor", "/author", "/categoria", "/category",
+    "/nosotros", "/quienes-somos", "/about", "/terminos", "/aviso", "/privacy",
+    "/contacto", "/clasificados", "/suscripciones", "/newsletter", "/foro",
+    "/edicion-impresa", "/impresa", "/archivo"
+)
+# extensiones no-noticia
+BAD_EXTENSIONS = (".pdf", ".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg")
 
 # ---------- Utilidades ----------
 def log(msg: str): print(msg, flush=True)
