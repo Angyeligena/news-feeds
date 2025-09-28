@@ -1,7 +1,6 @@
 # scripts/build_feeds.py
 # Genera RSS diarios para Venezuela, Panamá y República Dominicana
-# SIN Google News. Scraping + RSS nativo donde exista.
-# Fuerza diffs diarios con <lastBuildDate> y comentario con run_id.
+# Scraping + RSS nativo (donde haya). Fuerza diffs con <lastBuildDate> y comentario de build.
 
 import os
 import re
@@ -9,20 +8,17 @@ import html
 import hashlib
 from datetime import datetime, timedelta
 from urllib.parse import urlparse, urljoin, urlunparse, parse_qsl, urlencode
+from time import sleep
 
 import requests
 from bs4 import BeautifulSoup
 import feedparser
-from time import sleep
 
 OUTPUT_DIR = "data"
 REQUEST_TIMEOUT = 25
 RETRIES = 2
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (compatible; AngieNewsBot/1.0; +https://github.com/)"
-}
+HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; AngieNewsBot/1.0; +https://github.com/)"}
 
-# === Fuentes por país (tus links) ===
 SOURCES = {
     "venezuela": [
         "https://www.elnacional.com/",
@@ -36,20 +32,18 @@ SOURCES = {
         "https://www.bloomberglinea.com/latinoamerica/panama/",
     ],
     "dominicana": [
-        "https://www.diariolibre.com/rss/portada.xml",  # RSS nativo
+        "https://www.diariolibre.com/rss/portada.xml",
         "https://listindiario.com/",
         "https://www.elcaribe.com.do/",
         "https://eldinero.com.do/",
     ],
 }
 
-# Límite de ítems por país
 LIMITS = {"venezuela": 10, "panama": 10, "dominicana": 10}
 
-# Selectores por dominio (más robustos que genérico)
 SITE_SELECTORS = {
     # Venezuela
-    "www.elnacional.com": ["article h2 a", "h3 a", ".headline a", "a[href*='/opinion/'] ~ h2 a"],
+    "www.elnacional.com": ["article h2 a", "h3 a", ".headline a"],
     "talcualdigital.com": ["h2.entry-title a", "article h2 a", "div.post-title h2 a"],
     "efectococuyo.com": ["article h2 a", "h2 a[href*='/']"],
     "www.bloomberglinea.com": [
@@ -77,10 +71,7 @@ SITE_SELECTORS = {
     "eldinero.com.do": ["h2 a[href]", "article h2 a", "a.post-title[href]"],
 }
 
-# ---------- Utilidades ----------
-
 def clean_url(u: str) -> str:
-    """Quita UTM y trackers comunes. Normaliza esquema/host."""
     try:
         p = urlparse(u)
         qs = [(k, v) for k, v in parse_qsl(p.query) if not k.lower().startswith("utm") and k.lower() not in {"gclid", "fbclid"}]
@@ -111,26 +102,19 @@ def get_html(url: str) -> bytes | None:
 
 def fetch_html(url: str) -> BeautifulSoup | None:
     content = get_html(url)
-    if not content:
-        return None
+    if not content: return None
     return BeautifulSoup(content, "html.parser")
 
 def scrape_site(url: str, limit: int) -> list[dict]:
-    """Scrapea una portada con selectores por dominio + fallbacks agresivos."""
     soup = fetch_html(url)
-    if not soup:
-        return []
+    if not soup: return []
 
     parsed = urlparse(url)
     host = parsed.netloc.lower()
     base = f"{parsed.scheme}://{parsed.netloc}/"
-    selectors = SITE_SELECTORS.get(host, []) + [
-        "h1 a[href]", "h2 a[href]", "article h2 a",  # fallback genérico
-    ]
+    selectors = SITE_SELECTORS.get(host, []) + ["h1 a[href]", "h2 a[href]", "article h2 a"]
 
-    seen_links = set()
-    items: list[dict] = []
-
+    seen, items = set(), []
     for sel in selectors:
         for tag in soup.select(sel):
             link = tag.get("href")
@@ -139,43 +123,31 @@ def scrape_site(url: str, limit: int) -> list[dict]:
                 a = tag.find("a", href=True)
                 if a:
                     link = a["href"]
-                    if not text:
-                        text = a.get_text(strip=True)
-            if not text or not link:
-                continue
+                    if not text: text = a.get_text(strip=True)
+            if not text or not link: continue
             full = abs_url(base, link)
-            if full in seen_links:
-                continue
-            seen_links.add(full)
+            if full in seen: continue
+            seen.add(full)
             items.append({"title": text, "link": full, "date": datetime.utcnow(), "source": host})
-            if len(items) >= limit * 4:
-                break
-        if len(items) >= limit * 4:
-            break
+            if len(items) >= limit * 4: break
+        if len(items) >= limit * 4: break
 
-    # Filtro de calidad: evita menús y migas
     items = [it for it in items if len(it["title"]) >= 25]
 
-    # Fallback ultra: pesca <a> del mismo dominio con título largo si no llegó nada
     if not items:
         for a in soup.select("a[href]"):
             href = a.get("href", "")
-            txt = a.get_text(strip=True)
+            txt  = a.get_text(strip=True)
             full = abs_url(base, href)
-            if urlparse(full).netloc.lower() != host:
-                continue
-            if len(txt) < 35:
-                continue
+            if urlparse(full).netloc.lower() != host: continue
+            if len(txt) < 35: continue
             items.append({"title": txt, "link": full, "date": datetime.utcnow(), "source": host})
-            if len(items) >= limit * 2:
-                break
+            if len(items) >= limit * 2: break
 
-    # dedupe por (titulo normalizado + dominio)
     uniq, out = set(), []
     for it in items:
         key = hashlib.md5((norm_text(it["title"]) + "|" + urlparse(it["link"]).netloc).encode()).hexdigest()
-        if key in uniq:
-            continue
+        if key in uniq: continue
         uniq.add(key)
         it["link"] = clean_url(it["link"])
         out.append(it)
@@ -183,88 +155,66 @@ def scrape_site(url: str, limit: int) -> list[dict]:
     return out[: limit * 2]
 
 def fetch_rss(url: str, cutoff_utc: datetime) -> list[dict]:
-    """Lee RSS/Atom con UA y feedparser, filtrando por fecha."""
     content = get_html(url)
-    if not content:
-        return []
+    if not content: return []
     feed = feedparser.parse(content)
     out = []
     for e in feed.entries:
         title = getattr(e, "title", "") or ""
-        link = getattr(e, "link", "") or ""
-        if not title or not link:
-            continue
+        link  = getattr(e, "link", "") or ""
+        if not title or not link: continue
         if getattr(e, "published_parsed", None):
             dt = datetime(*e.published_parsed[:6])
         elif getattr(e, "updated_parsed", None):
             dt = datetime(*e.updated_parsed[:6])
         else:
             dt = datetime.utcnow()
-        if dt < cutoff_utc:
-            continue
-        out.append({
-            "title": title,
-            "link": clean_url(link),
-            "date": dt,
-            "source": urlparse(link).netloc or urlparse(url).netloc,
-        })
+        if dt < cutoff_utc: continue
+        out.append({"title": title, "link": clean_url(link), "date": dt,
+                    "source": urlparse(link).netloc or urlparse(url).netloc})
     return out
 
 def make_rss(country: str, items: list[dict]) -> str:
-    """Genera RSS 2.0 con lastBuildDate y un comentario con timestamp para diferenciar runs."""
     now_http = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT")
-
-    def esc(s: str) -> str:
-        return html.escape(s or "", quote=True)
-
-    # Comentario para forzar diff incluso si el contenido coincide byte a byte
     build_comment = f"<!-- build {datetime.utcnow().isoformat()}Z -->"
-
+    def esc(s: str) -> str: return html.escape(s or "", quote=True)
     parts = [
         '<?xml version="1.0" encoding="UTF-8"?>',
-        "<rss version=\"2.0\">",
-        "<channel>",
-        f"  <title>Noticias {esc(country.title())}</title>",
-        "  <link>https://github.com/</link>",
-        "  <description>Feed generado automáticamente</description>",
-        f"  <lastBuildDate>{now_http}</lastBuildDate>",
-        "  <generator>news-feeds GitHub Action</generator>",
-        f"  {build_comment}",
+        '<rss version="2.0">',
+        '<channel>',
+        f'  <title>Noticias {esc(country.title())}</title>',
+        '  <link>https://github.com/</link>',
+        '  <description>Feed generado automáticamente</description>',
+        f'  <lastBuildDate>{now_http}</lastBuildDate>',
+        '  <generator>news-feeds GitHub Action</generator>',
+        f'  {build_comment}',
     ]
     for it in items:
         parts.extend([
-            "  <item>",
+            '  <item>',
             f"    <title>{esc(it['title'])}</title>",
             f"    <link>{esc(it['link'])}</link>",
             f"    <pubDate>{it['date'].strftime('%a, %d %b %Y %H:%M:%S GMT')}</pubDate>",
-            "  </item>",
+            '  </item>',
         ])
-    parts.extend(["</channel>", "</rss>", ""])
+    parts.extend(['</channel>', '</rss>', ''])
     return "\n".join(parts)
 
 def generate_country_feed(country: str, urls: list[str], limit: int) -> None:
-    items: list[dict] = []
-    cutoff = datetime.utcnow() - timedelta(days=1)
-
+    items, cutoff = [], datetime.utcnow() - timedelta(days=1)
     for url in urls:
         if url.endswith(".xml") or "rss" in url.lower() or "feed" in url.lower():
             items.extend(fetch_rss(url, cutoff))
         else:
             items.extend(scrape_site(url, limit))
-
-    # Ordenar, dedupe final, limitar
     items.sort(key=lambda x: x["date"], reverse=True)
     uniq, final = set(), []
     for it in items:
         key = hashlib.md5((norm_text(it["title"]) + "|" + urlparse(it["link"]).netloc).encode()).hexdigest()
-        if key in uniq:
-            continue
+        if key in uniq: continue
         uniq.add(key)
         final.append(it)
-        if len(final) >= limit:
-            break
-
-    # Si a pesar de todo no hay items, mete un placeholder para que se vea en logs/HTML
+        if len(final) >= limit: break
     if not final:
         final = [{
             "title": f"No se pudieron extraer titulares para {country} en este run",
@@ -272,9 +222,7 @@ def generate_country_feed(country: str, urls: list[str], limit: int) -> None:
             "date": datetime.utcnow(),
             "source": "generator"
         }]
-
     rss_xml = make_rss(country, final)
-
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     out_path = os.path.join(OUTPUT_DIR, f"{country}.xml")
     with open(out_path, "w", encoding="utf-8", newline="\n") as f:
