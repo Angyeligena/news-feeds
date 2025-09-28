@@ -21,12 +21,10 @@ SOURCES = {
         "https://www.elnacional.com/",
         "https://talcualdigital.com/",
         "https://efectococuyo.com/",
-        "https://www.bloomberglinea.com/latinoamerica/venezuela/",
     ],
     "panama": [
         "https://www.prensa.com/",
         "https://www.laestrella.com.pa/",
-        "https://www.bloomberglinea.com/latinoamerica/panama/",
     ],
     "dominicana": [
         "https://www.diariolibre.com/rss/portada.xml",
@@ -48,12 +46,6 @@ SITE_SELECTORS = {
     "www.elnacional.com": ["article h2 a", "h3 a", ".headline a"],
     "talcualdigital.com": ["h2.entry-title a", "article h2 a", "div.post-title h2 a"],
     "efectococuyo.com": ["article h2 a", "h2 a[href*='/']"],
-    "www.bloomberglinea.com": [
-        "article a[href*='/venezuela/'] h2",
-        "article a[href*='/panama/'] h2",
-        "article h2 a",
-        "article a[href] h2",
-    ],
     # Panamá
     "www.prensa.com": [
         "h1 a[href^='https://www.prensa.com/']",
