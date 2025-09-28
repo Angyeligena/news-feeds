@@ -1,8 +1,8 @@
-name: Build Feeds (PR)
+name: Build Feeds (PR auto)
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 10 * * *"
+    - cron: "0 10 * * *"   # 10:00 UTC diario
 
 permissions:
   contents: write
@@ -12,34 +12,63 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with: { fetch-depth: 0, persist-credentials: true }
+      - name: Checkout (branch real, no HEAD detached)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+          ref: ${{ github.ref_name }}
 
-      - uses: actions/setup-python@v5
-        with: { python-version: '3.11' }
+      - name: Show repo info
+        run: |
+          echo "GITHUB_REF: $GITHUB_REF"
+          echo "GITHUB_REF_NAME: $GITHUB_REF_NAME"
+          git remote -v
+          git branch -vv || true
+          echo "=== .gitignore ==="
+          [ -f .gitignore ] && cat .gitignore || echo "(no .gitignore)"
+          echo "=== check-ignore ==="
+          git check-ignore -v data || true
+          git check-ignore -v "*.xml" || true
 
-      - run: |
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deps
+        run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Build feeds
+      - name: Build feeds (fail si falta algo)
         run: |
           set -euo pipefail
           python scripts/build_feeds.py
           mkdir -p data
+          # Fuerza diff SIEMPRE
           date -u +"%Y-%m-%dT%H:%M:%SZ" > data/.build-stamp
-          ls -la data
+          echo "=== TREE ==="; ls -la
+          echo "=== DATA ==="; ls -la data
+          for f in venezuela.xml panama.xml dominicana.xml; do
+            test -s "data/$f" || (echo "$f vacío o no existe" && exit 1)
+            grep -q "<lastBuildDate>" "data/$f" || (echo "$f sin lastBuildDate" && exit 1)
+          done
+          echo "=== HEAD XMLs ==="
           head -n 25 data/*.xml || true
 
-      - name: Create PR
+      # Usamos PR SIEMPRE: evita bloqueos de rama protegida
+      - name: Create/update PR with feed changes
         uses: peter-evans/create-pull-request@v6
         with:
           branch: feeds-bot
           title: "Auto build feeds"
-          commit-message: "Auto build feeds: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-          body: "Actualización diaria de XML (con lastBuildDate y build-stamp)."
+          commit-message: "Auto build feeds: ${{ github.run_id }} @ ${{ github.run_number }}"
+          body: |
+            Actualización diaria de feeds (con <lastBuildDate> y .build-stamp).
+            Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           add-paths: |
             data/*.xml
             data/.build-stamp
-          signoff: false
           delete-branch: true
+          labels: feeds, automated
