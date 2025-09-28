@@ -1,9 +1,8 @@
 name: Build Feeds
-
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 10 * * *"   # Todos los días a las 10:00 UTC
+    - cron: "0 10 * * *"   # 10:00 UTC diario
 
 permissions:
   contents: write
@@ -15,11 +14,19 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # clona todo el historial
+          fetch-depth: 0
           persist-credentials: true
 
+      - name: Show .gitignore and check-ignore
+        run: |
+          echo "=== .gitignore ==="
+          [ -f .gitignore ] && cat .gitignore || echo "(no .gitignore)"
+          echo "=== git check-ignore data/ and *.xml ==="
+          git check-ignore -v data || true
+          git check-ignore -v "*.xml" || true
+
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
@@ -28,11 +35,28 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run build script
+      - name: Run build script (fail if no files)
         run: |
+          set -euo pipefail
           python scripts/build_feeds.py
+          echo "=== LIST AFTER SCRIPT ==="
+          ls -la
+          ls -la data || (echo "FALTA carpeta data" && exit 1)
+          # Asegura que existan archivos y pesen > 0
+          test -s data/venezuela.xml || (echo "venezuela.xml vacío o no existe" && exit 1)
+          test -s data/panama.xml    || (echo "panama.xml vacío o no existe" && exit 1)
+          test -s data/dominicana.xml || (echo "dominicana.xml vacío o no existe" && exit 1)
+          echo "=== HEAD XMLs ==="
+          head -n 20 data/*.xml || true
 
-      - name: Commit generated feeds
+      - name: Debug git status (antes de add)
+        run: |
+          echo "=== GIT STATUS (pre-add) ==="
+          git status
+          echo "=== DIFF (working) ==="
+          git diff --name-only
+
+      - name: Commit generated feeds (force add if ignored)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -41,26 +65,21 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Agrega TODO (no solo data/*.xml) para evitar el problema del glob.
-          git add -A
+          # Si .gitignore bloquea, forzamos el add
+          git add -A || true
+          git add -f data/*.xml || true
 
-          # Solo commitea si hay cambios staged
+          echo "=== STAGED FILES ==="
+          git diff --cached --name-only || true
+
           if git diff --cached --quiet; then
-            echo "No changes to commit"
+            echo "No changes to commit (nada staged)"
           else
             git commit -m "Auto build feeds: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-            # Evita non-fast-forward si corren builds seguidos
             git pull --rebase origin main || true
             git push origin HEAD:main
           fi
 
-      - name: Show generated files
+      - name: Final git status
         run: |
-          echo "=== LIST DATA DIR ==="
-          ls -la data || ls -la
-          echo "=== HEAD OF XMLs ==="
-          for f in data/*.xml; do
-            echo "---- $f ----"
-            head -n 40 "$f" || true
-          done
-
+          git status
