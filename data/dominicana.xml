@@ -4,58 +4,104 @@
   <title>Noticias Dominicana</title>
   <link>https://github.com/</link>
   <description>Feed generado automáticamente</description>
-  <lastBuildDate>Sun, 28 Sep 2025 12:25:08 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 28 Sep 2025 12:51:10 GMT</lastBuildDate>
   <generator>news-feeds GitHub Action</generator>
-  <!-- build 2025-09-28T12:25:08.257012Z -->
+  <!-- build 2025-09-28T12:51:10.092503Z -->
+  <item>
+    <title>Luis Abinader destaca que Energas 4 será clave para mitigar problemas de energía</title>
+    <link>https://eldinero.com.do/337864/luis-abinader-destaca-que-energas-4-sera-clave-para-mitigar-problemas-de-energia/</link>
+    <pubDate>Sun, 28 Sep 2025 12:51:09 GMT</pubDate>
+    <category>eldinero.com.do</category>
+  </item>
+  <item>
+    <title>La empatía y el amor agonizan</title>
+    <link>https://listindiario.com/puntos-de-vista/20250928/empatia-amor-agonizan_876000.html</link>
+    <pubDate>Sun, 28 Sep 2025 12:51:05 GMT</pubDate>
+    <category>listindiario.com</category>
+  </item>
+  <item>
+    <title>Niños de la Nueva Barquita entrenan en polideportivo deteriorado</title>
+    <link>https://www.diariolibre.com/actualidad/educacion/2025/09/28/ninos-de-la-nueva-barquita-entrenan-en-polideportivo-deteriorado/3259617</link>
+    <pubDate>Sun, 28 Sep 2025 00:01:00 GMT</pubDate>
+    <category>www.diariolibre.com</category>
+  </item>
+  <item>
+    <title>Gobierno mantiene sin variación precios de combustibles</title>
+    <link>https://eldinero.com.do/337905/gobierno-mantiene-sin-variacion-precios-de-combustibles-2/</link>
+    <pubDate>Sun, 28 Sep 2025 12:51:09 GMT</pubDate>
+    <category>eldinero.com.do</category>
+  </item>
+  <item>
+    <title>Ahogados en un mar de deudas</title>
+    <link>https://listindiario.com/puntos-de-vista/20250928/ahogados-mar-deudas_875998.html</link>
+    <pubDate>Sun, 28 Sep 2025 12:51:05 GMT</pubDate>
+    <category>listindiario.com</category>
+  </item>
+  <item>
+    <title>José Joaquín Puello asegura IA debería estar en los hospitales</title>
+    <link>https://www.diariolibre.com/actualidad/salud/2025/09/28/jose-joaquin-puello-asegura-ia-deberia-estar-en-los-hospitales/3259003</link>
+    <pubDate>Sun, 28 Sep 2025 00:01:00 GMT</pubDate>
+    <category>www.diariolibre.com</category>
+  </item>
+  <item>
+    <title>Sargazo afecta operación en AES Andrés</title>
+    <link>https://eldinero.com.do/338174/sargazo-afecta-operacion-en-aes-andres/</link>
+    <pubDate>Sun, 28 Sep 2025 12:51:09 GMT</pubDate>
+    <category>eldinero.com.do</category>
+  </item>
+  <item>
+    <title>La Feria del Libro y su fecha de celebración</title>
+    <link>https://listindiario.com/puntos-de-vista/20250928/feria-libro-fecha-celebracion_876003.html</link>
+    <pubDate>Sun, 28 Sep 2025 12:51:05 GMT</pubDate>
+    <category>listindiario.com</category>
+  </item>
+  <item>
+    <title>Educación Física en Escuelas: diferencias entre privadas y públicas</title>
+    <link>https://www.diariolibre.com/deportes/mas-deportes/2025/09/28/educacion-fisica-en-escuelas-diferencias-entre-privadas-y-publicas/3246985</link>
+    <pubDate>Sun, 28 Sep 2025 00:01:00 GMT</pubDate>
+    <category>www.diariolibre.com</category>
+  </item>
+  <item>
+    <title>Un apagón eléctrico afecta operaciones del Aeropuerto las Américas de Santo Domingo</title>
+    <link>https://eldinero.com.do/337972/un-apagon-electrico-afecta-operaciones-del-aeropuerto-las-americas-de-santo-domingo/</link>
+    <pubDate>Sun, 28 Sep 2025 12:51:09 GMT</pubDate>
+    <category>eldinero.com.do</category>
+  </item>
+  <item>
+    <title>Opret restablece el servicio en la estación Pedro Francisco Bonó</title>
+    <link>https://www.diariolibre.com/actualidad/nacional/2025/09/27/opret-restablece-el-servicio-en-la-estacion-pedro-francisco-bono/3259791</link>
+    <pubDate>Sat, 27 Sep 2025 22:00:00 GMT</pubDate>
+    <category>www.diariolibre.com</category>
+  </item>
+  <item>
+    <title>La rectificación de los nombres de Confucio en el rigor constitucional dominicano</title>
+    <link>https://listindiario.com/puntos-de-vista/20250928/rectificacion-nombres-confucio-rigor-constitucional-dominicano_876009.html</link>
+    <pubDate>Sun, 28 Sep 2025 12:51:05 GMT</pubDate>
+    <category>listindiario.com</category>
+  </item>
+  <item>
+    <title>Ministerio de Energía y Minas obtiene máxima puntuación en transparencia gubernamental</title>
+    <link>https://eldinero.com.do/338063/ministerio-de-energia-y-minas-obtiene-maxima-puntuacion-en-transparencia-gubernamental/</link>
+    <pubDate>Sun, 28 Sep 2025 12:51:09 GMT</pubDate>
+    <category>eldinero.com.do</category>
+  </item>
   <item>
     <title>El petróleo de Texas baja un 0.06%, hasta los US$62.64 el barril</title>
     <link>https://eldinero.com.do/338084/el-petroleo-de-texas-baja-un-0-06-hasta-los-us62-64-el-barril/</link>
-    <pubDate>Sun, 28 Sep 2025 12:25:08 GMT</pubDate>
+    <pubDate>Sun, 28 Sep 2025 12:51:09 GMT</pubDate>
+    <category>eldinero.com.do</category>
   </item>
   <item>
     <title>Entidades del sector energía, minería e hidrocarburos participarán Feria Internacional del Libro Santo Domingo</title>
     <link>https://eldinero.com.do/338310/entidades-del-sector-energia-mineria-e-hidrocarburos-participaran-feria-internacional-del-libro-santo-domingo/</link>
-    <pubDate>Sun, 28 Sep 2025 12:25:08 GMT</pubDate>
+    <pubDate>Sun, 28 Sep 2025 12:51:09 GMT</pubDate>
+    <category>eldinero.com.do</category>
   </item>
   <item>
     <title>SIBA Energy avanza en la etapa final de su ciclo combinado</title>
     <link>https://eldinero.com.do/338398/siba-energy-avanza-en-la-etapa-final-de-su-ciclo-combinado/</link>
-    <pubDate>Sun, 28 Sep 2025 12:25:08 GMT</pubDate>
-  </item>
-  <item>
-    <title>Gobierno deja sin variación precios de combustibles</title>
-    <link>https://eldinero.com.do/338505/gobierno-deja-sin-variacion-precios-de-combustibles/</link>
-    <pubDate>Sun, 28 Sep 2025 12:25:08 GMT</pubDate>
-  </item>
-  <item>
-    <title>Banreservas reafirma liderazgo en inversiones turísticas en Miches tras negociaciones en Top Resa</title>
-    <link>https://eldinero.com.do/338481/banreservas-reafirma-liderazgo-en-inversiones-turisticas-en-miches-tras-negociaciones-en-top-resa/</link>
-    <pubDate>Sun, 28 Sep 2025 12:25:08 GMT</pubDate>
-  </item>
-  <item>
-    <title>Bagrícola y TNR destinan RD$323 millones para proyectos solares en Línea Noroeste</title>
-    <link>https://eldinero.com.do/338519/bagricola-y-tnr-destinan-rd323-millones-para-proyectos-solares-en-linea-noroeste/</link>
-    <pubDate>Sun, 28 Sep 2025 12:25:08 GMT</pubDate>
-  </item>
-  <item>
-    <title>EE.UU. es la principal fuente de inversión extranjera en RD, destaca Embajada</title>
-    <link>https://eldinero.com.do/338583/ee-uu-es-la-principal-fuente-de-inversion-extranjera-en-rd-destaca-embajada/</link>
-    <pubDate>Sun, 28 Sep 2025 12:25:08 GMT</pubDate>
-  </item>
-  <item>
-    <title>Joel Santos destaca potencial de la artesanía del larimar en el sector turístico dominicano</title>
-    <link>https://eldinero.com.do/337878/joel-santos-destaca-potencial-de-la-artesania-del-larimar-en-el-sector-turistico-dominicano/</link>
-    <pubDate>Sun, 28 Sep 2025 12:25:08 GMT</pubDate>
-  </item>
-  <item>
-    <title>Arajet es reconocida como empresa del año en Sanford-Orlando</title>
-    <link>https://eldinero.com.do/338036/arajet-es-reconocida-como-empresa-del-ano-en-sanford-orlando/</link>
-    <pubDate>Sun, 28 Sep 2025 12:25:08 GMT</pubDate>
-  </item>
-  <item>
-    <title>Infotep y Fundación Genera ITM lanzan diplomado especializado en turismo de cruceros en Pedernales</title>
-    <link>https://eldinero.com.do/338051/infotep-y-fundacion-genera-itm-lanzan-diplomado-especializado-en-turismo-de-cruceros-en-pedernales/</link>
-    <pubDate>Sun, 28 Sep 2025 12:25:08 GMT</pubDate>
+    <pubDate>Sun, 28 Sep 2025 12:51:09 GMT</pubDate>
+    <category>eldinero.com.do</category>
   </item>
 </channel>
 </rss>
