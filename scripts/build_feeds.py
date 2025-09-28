@@ -15,219 +15,50 @@ import feedparser
 
 OUTPUT_DIR = "data"
 REQUEST_TIMEOUT = 20
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (compatible; news-feeds/1.0; +https://github.com/)"
-}
+HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; news-feeds/1.0; +https://github.com/)"}
 
-# === Fuentes por país (tus links) ===
-SOURCES = {
-    "venezuela": [
-        "https://www.elnacional.com/",
-        "https://talcualdigital.com/",
-        "https://efectococuyo.com/",
-        "https://www.bloomberglinea.com/latinoamerica/venezuela/",
-    ],
-    "panama": [
-        "https://www.prensa.com/",
-        "https://www.laestrella.com.pa/",
-        "https://www.bloomberglinea.com/latinoamerica/panama/",
-    ],
-    "dominicana": [
-        "https://www.diariolibre.com/rss/portada.xml",  # RSS nativo
-        "https://listindiario.com/",
-        "https://www.elcaribe.com.do/",
-        "https://eldinero.com.do/",
-    ],
-}
+# ... tus SOURCES se quedan igual ...
 
-# Límite de ítems por país
-LIMITS = {"venezuela": 10, "panama": 10, "dominicana": 10}
-
-# Selectores por dominio (más robusto que un selector genérico)
+# === Selectores por dominio (añade/ajusta estos) ===
 SITE_SELECTORS = {
     # Venezuela
-    "www.elnacional.com": [
-        "article h2 a",
-        "h3 a",
-        ".headline a",
-    ],
-    "talcualdigital.com": [
-        "h2.entry-title a",
-        "article h2 a",
-    ],
-    "efectococuyo.com": [
-        "h2 a[href]",
-        "article h2 a",
-    ],
+    "www.elnacional.com": ["article h2 a", "h3 a", ".headline a"],
+    "talcualdigital.com": ["h2.entry-title a", "article h2 a"],
+    "efectococuyo.com": ["h2 a[href]", "article h2 a"],
     "www.bloomberglinea.com": [
         "article a[href*='/venezuela/'] h2",
         "article a[href*='/panama/'] h2",
         "article h2 a",
         "article a[href] h2",
     ],
-    # Panamá
+    # Panamá — SELECTORES MEJORADOS
     "www.prensa.com": [
         "h1 a[href]",
         "h2 a[href]",
         "article h2 a",
+        "a[href^='https://www.prensa.com/']:not([href*='tag/'])",
     ],
     "www.laestrella.com.pa": [
+        "h1 a[href]",
         "h2 a[href]",
         "article h2 a",
+        "a[href^='https://www.laestrella.com.pa/']:not([href*='tag/'])",
     ],
     # Dominicana
-    "listindiario.com": [
-        "h2 a[href]",
-        "h3 a[href]",
-        "article h2 a",
-    ],
-    "www.elcaribe.com.do": [
-        "h2 a[href]",
-        "article h2 a",
-    ],
-    "eldinero.com.do": [
-        "h2 a[href]",
-        "article h2 a",
-    ],
+    "listindiario.com": ["h2 a[href]", "h3 a[href]", "article h2 a"],
+    "www.elcaribe.com.do": ["h2 a[href]", "article h2 a"],
+    "eldinero.com.do": ["h2 a[href]", "article h2 a"],
 }
 
-# --- Utilidades ---
+# -- dentro de scrape_site(), tras construir items, añade filtro de calidad:
+# (evita ruido de menús con textos cortos)
+items = [it for it in items if len(it["title"]) >= 25]
 
-def clean_url(u: str) -> str:
-    """Quita UTM y trackers comunes. Normaliza esquema/host."""
-    try:
-        p = urlparse(u)
-        qs = [(k, v) for k, v in parse_qsl(p.query) if not k.lower().startswith("utm") and k.lower() not in {"gclid", "fbclid"}]
-        return urlunparse((p.scheme or "https", p.netloc.lower(), p.path, "", urlencode(qs), ""))
-    except Exception:
-        return u
-
-
-def norm_text(s: str) -> str:
-    s = re.sub(r"\s+", " ", s or "").strip().lower()
-    return s
-
-
-def abs_url(base: str, href: str) -> str:
-    if not href:
-        return ""
-    if href.startswith("//"):
-        return "https:" + href
-    return urljoin(base, href)
-
-
-def fetch_html(url: str) -> BeautifulSoup | None:
-    try:
-        r = requests.get(url, headers=HEADERS, timeout=REQUEST_TIMEOUT)
-        r.raise_for_status()
-        return BeautifulSoup(r.content, "html.parser")
-    except Exception as e:
-        print(f"[WARN] Error HTML GET {url}: {e}")
-        return None
-
-
-def scrape_site(url: str, limit: int) -> list[dict]:
-    """Scrapea titulares principales de una portada con selectores por dominio + fallback."""
-    soup = fetch_html(url)
-    if not soup:
-        return []
-
-    parsed = urlparse(url)
-    host = parsed.netloc.lower()
-    selectors = SITE_SELECTORS.get(host, []) + ["h1 a[href]", "h2 a[href]"]  # fallback al final
-
-    seen_links = set()
-    items: list[dict] = []
-
-    for sel in selectors:
-        # En Bloomberg Línea a veces el <h2> es el hijo; contemplamos ambos
-        for tag in soup.select(sel):
-            # Si el selector apunta al <h2>, intenta subir al <a>
-            link = tag.get("href")
-            text = tag.get_text(strip=True)
-            if not link:
-                a = tag.find("a", href=True)
-                if a:
-                    link = a["href"]
-                    if not text:
-                        text = a.get_text(strip=True)
-            if not text or not link:
-                continue
-
-            full = abs_url(f"{parsed.scheme}://{parsed.netloc}/", link)
-            if full in seen_links:
-                continue
-            seen_links.add(full)
-
-            items.append(
-                {
-                    "title": text,
-                    "link": full,
-                    "date": datetime.utcnow(),
-                    "source": host,
-                }
-            )
-            if len(items) >= limit * 3:  # overfetch para dedupe posterior
-                break
-        if len(items) >= limit * 3:
-            break
-
-    # dedupe por (titulo normalizado + dominio)
-    uniq, out = set(), []
-    for it in items:
-        key = hashlib.md5((norm_text(it["title"]) + "|" + urlparse(it["link"]).netloc).encode()).hexdigest()
-        if key in uniq:
-            continue
-        uniq.add(key)
-        it["link"] = clean_url(it["link"])
-        out.append(it)
-
-    return out[: limit * 2]  # aún sobredimensionado
-
-
-def fetch_rss(url: str, cutoff_utc: datetime) -> list[dict]:
-    """Lee RSS/Atom con requests (+UA) y feedparser."""
-    try:
-        r = requests.get(url, headers=HEADERS, timeout=REQUEST_TIMEOUT)
-        r.raise_for_status()
-        feed = feedparser.parse(r.content)
-        out = []
-        for e in feed.entries:
-            # Título/enlace
-            title = getattr(e, "title", "") or ""
-            link = getattr(e, "link", "") or ""
-            if not title or not link:
-                continue
-            # Fecha
-            if getattr(e, "published_parsed", None):
-                dt = datetime(*e.published_parsed[:6])
-            elif getattr(e, "updated_parsed", None):
-                dt = datetime(*e.updated_parsed[:6])
-            else:
-                dt = datetime.utcnow()
-            if dt < cutoff_utc:
-                continue
-            out.append(
-                {
-                    "title": title,
-                    "link": clean_url(link),
-                    "date": dt,
-                    "source": urlparse(link).netloc or urlparse(url).netloc,
-                }
-            )
-        return out
-    except Exception as e:
-        print(f"[WARN] Error RSS GET {url}: {e}")
-        return []
-
-
+# -- en make_rss(), AGREGA lastBuildDate y generator --
 def make_rss(country: str, items: list[dict]) -> str:
-    """Genera XML RSS 2.0 simple y válido; fuerza lastBuildDate para que Git vea cambios."""
     now_http = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT")
-
     def esc(s: str) -> str:
         return html.escape(s or "", quote=True)
-
     parts = [
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
         "<rss version=\"2.0\">",
@@ -238,6 +69,7 @@ def make_rss(country: str, items: list[dict]) -> str:
         f"  <lastBuildDate>{now_http}</lastBuildDate>",
         "  <generator>news-feeds GitHub Action</generator>",
     ]
+    
     for it in items:
         parts.extend(
             [
