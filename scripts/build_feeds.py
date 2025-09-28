@@ -1,6 +1,6 @@
 # scripts/build_feeds.py
 # Feeds diarios PA/VE/DO SIN Google News.
-# Exact-match por URL (mismo host + prefijo de path) y CUOTAS por fuente.
+# Exact-match por URL (opcional por fuente) y CUOTAS por fuente.
 
 import os, re, html, hashlib, traceback
 from datetime import datetime, timedelta
@@ -14,50 +14,66 @@ OUTPUT_DIR = "data"
 REQUEST_TIMEOUT = 25
 RETRIES = 2
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (compatible; AngieNewsBot/1.2; +https://github.com/)",
+    "User-Agent": "Mozilla/5.0 (compatible; AngieNewsBot/1.3; +https://github.com/)",
     "Accept-Language": "es-ES,es;q=0.9,en;q=0.8",
 }
 
-# ========================== FUENTES Y CUOTAS ==========================
-# Usa EXACTAMENTE estas URLs y saca este número de noticias por fuente.
+# =================== FUENTES / CUOTAS / MODO PREFIJO ===================
+# strict_prefix: True => solo acepta enlaces cuyo path empiece por el path de la fuente
+#                 False => acepta cualquier enlace del MISMO HOST (útil para listados que apuntan a otras secciones)
 SOURCES_BY_COUNTRY = {
     "venezuela": [
-        ("https://www.elnacional.com/venezuela/", 5),
-        ("https://talcualdigital.com/noticias/", 5),
-        ("https://efectococuyo.com/politica/", 5),
+        ("https://www.elnacional.com/venezuela/", 5, True),   # estricto: /venezuela/
+        ("https://talcualdigital.com/noticias/",  5, False),  # NO estricto: listados enlazan a otras secciones
+        ("https://efectococuyo.com/politica/",    5, False),  # NO estricto por mismo motivo
     ],
     "panama": [
-        ("https://www.prensa.com/", 5),
-        ("https://www.laestrella.com.pa/panama", 5),
+        ("https://www.prensa.com/",                 5, True),
+        ("https://www.laestrella.com.pa/panama",    5, True),
     ],
     "dominicana": [
-        ("https://www.diariolibre.com/rss/portada.xml", 3),  # RSS
-        ("https://listindiario.com/la-republica", 3),
-        ("https://www.elcaribe.com.do/seccion/panorama/pais/", 3),
-        ("https://eldinero.com.do/", 3),
+        ("https://www.diariolibre.com/rss/portada.xml", 3, True),  # RSS
+        ("https://listindiario.com/la-republica",           3, True),
+        ("https://www.elcaribe.com.do/seccion/panorama/pais/", 3, True),
+        ("https://eldinero.com.do/",                        3, True),
     ],
 }
 
-# ========================== SELECTORES OPCIONALES ==========================
+# ========================== SELECTORES REFORZADOS ==========================
 SITE_SELECTORS = {
     # VE
-    "www.elnacional.com": ["article h2 a", "h1 a[href]", "h2 a[href]"],
-    "talcualdigital.com": ["h2.entry-title a", "article h2 a", "h2 a[href]"],
-    "efectococuyo.com": ["article h2 a", "h2 a[href]", ".jeg_post_title a"],
+    "www.elnacional.com": [
+        "article h2 a[href]", "article h3 a[href]", "h1 a[href]", "h2 a[href]", ".headline a[href]", ".post-title a[href]"
+    ],
+    "talcualdigital.com": [
+        "h2.entry-title a[href]", "article h2 a[href]", "div.post-title h2 a[href]",
+        ".jeg_post_title a[href]", ".post-title a[href]", "h3 a[href]"
+    ],
+    "efectococuyo.com": [
+        "article h2 a[href]", "h2 a[href]", "h3 a[href]", ".jeg_post_title a[href]", ".post-title a[href]"
+    ],
     # PA
     "www.prensa.com": [
-        "article h2 a[href]", "h1 a[href]", "h2 a[href]",
+        "article h2 a[href]", "h1 a[href]", "h2 a[href]", ".headline a[href]"
     ],
     "www.laestrella.com.pa": [
-        "article h2 a[href]", "h1 a[href]", "h2 a[href]",
+        "article h2 a[href]", "h1 a[href]", "h2 a[href]", ".headline a[href]"
     ],
     # DO
-    "listindiario.com": ["article h2 a", "h2 a[href]", "h3 a[href]"],
-    "www.elcaribe.com.do": ["article h2 a", "h2 a[href]", "a.post-title[href]"],
-    "eldinero.com.do": ["article h2 a", "h2 a[href]", "a.post-title[href]"],
+    "listindiario.com": [
+        "article h2 a[href]", "h2 a[href]", "h3 a[href]", ".post-title a[href]", ".headline a[href]"
+    ],
+    "www.elcaribe.com.do": [
+        # estructura frecuente en secciones
+        "article h2 a[href]", "h2 a[href]", "a.post-title[href]", ".entry-title a[href]",
+        ".post-item a[href]", ".headline a[href]"
+    ],
+    "eldinero.com.do": [
+        "article h2 a[href]", "h2 a[href]", "h3 a[href]", "a.post-title[href]", ".post-title a[href]"
+    ],
 }
 
-# ============================= UTILIDADES =============================
+# ============================ UTILIDADES =============================
 def log(msg: str): print(msg, flush=True)
 
 def clean_url(u: str) -> str:
@@ -65,7 +81,6 @@ def clean_url(u: str) -> str:
         p = urlparse(u)
         qs = [(k, v) for k, v in parse_qsl(p.query)
               if not k.lower().startswith("utm") and k.lower() not in {"gclid","fbclid"}]
-        # conservar path tal cual; no recortamos "/" final para no romper prefijos
         return urlunparse((p.scheme or "https", p.netloc.lower(), p.path, "", urlencode(qs), ""))
     except Exception:
         return u
@@ -75,21 +90,22 @@ def abs_url(base: str, href: str) -> str:
     if href.startswith("//"): return "https:" + href
     return urljoin(base, href)
 
-def same_host_and_path_prefix(link: str, base_url: str) -> bool:
-    """
-    Acepta SOLO si:
-    - El host es el mismo.
-    - El path del link empieza con el path de la fuente (prefijo exacto).
-    """
+def same_host(link: str, base_url: str) -> bool:
     try:
         pl = urlparse(clean_url(link))
         pb = urlparse(clean_url(base_url))
-        if pl.netloc.lower() != pb.netloc.lower():
-            return False
-        # normalizamos: asegurar que el prefijo termina con "/"
+        return pl.netloc.lower() == pb.netloc.lower()
+    except Exception:
+        return False
+
+def path_starts_with_prefix(link: str, base_url: str) -> bool:
+    """Acepta si el path de link empieza por el path de la fuente (prefijo exacto)."""
+    try:
+        pl = urlparse(clean_url(link))
+        pb = urlparse(clean_url(base_url))
         base_path = pb.path if pb.path.endswith("/") else pb.path + "/"
-        link_path = pl.path
-        return link_path.startswith(base_path) or link_path == pb.path
+        # permitimos coincidencia exacta del path base también
+        return pl.path.startswith(base_path) or pl.path == pb.path
     except Exception:
         return False
 
@@ -109,11 +125,12 @@ def get_html(url: str) -> requests.Response | None:
             sleep(1.0)
     return None
 
-# ============================= EXTRACCIÓN =============================
-def scrape_exact(url: str, quota: int) -> list[dict]:
+# ============================ EXTRACCIÓN =============================
+def scrape_source(url: str, quota: int, strict_prefix: bool) -> list[dict]:
     """
-    Scrapea SOLO la página dada y devuelve hasta `quota` items
-    cuyos enlaces empiecen por el MISMO host y el MISMO path (prefijo).
+    Scrapea SOLO la página dada y devuelve hasta `quota` items.
+    - strict_prefix=True: exige mismo host + path que empiece por el path base.
+    - strict_prefix=False: exige mismo host, pero el path puede ser cualquiera.
     """
     out: list[dict] = []
     resp = get_html(url)
@@ -137,13 +154,16 @@ def scrape_exact(url: str, quota: int) -> list[dict]:
             if not href or not title:
                 continue
             full = clean_url(abs_url(base, href))
-            # FILTRO CLAVE: mismo host + path prefijo EXACTO de la fuente
-            if not same_host_and_path_prefix(full, url):
+            # Host debe coincidir siempre
+            if not same_host(full, url):
+                continue
+            # Prefijo exacto opcional
+            if strict_prefix and not path_starts_with_prefix(full, url):
                 continue
             if full in seen_links:
                 continue
             seen_links.add(full)
-            # filtros muy suaves
+            # filtros básicos
             path = urlparse(full).path.lower()
             if any(seg in path for seg in ("/tag/", "/etiqueta/", "/autor", "/author", "/categoria", "/category")):
                 continue
@@ -160,14 +180,15 @@ def scrape_exact(url: str, quota: int) -> list[dict]:
         if len(out) >= quota:
             break
 
-    # Si no llegamos al cupo, intentamos un fallback muy conservador:
+    # Fallback muy conservador si no llenó
     if len(out) < quota:
         for a in soup.select("a[href]"):
             if len(out) >= quota: break
             href = a.get("href"); title = a.get_text(strip=True)
             if not href or not title: continue
             full = clean_url(abs_url(base, href))
-            if not same_host_and_path_prefix(full, url): continue
+            if not same_host(full, url): continue
+            if strict_prefix and not path_starts_with_prefix(full, url): continue
             if full in {it["link"] for it in out}: continue
             if len(title) < 12: continue
             path = urlparse(full).path.lower()
@@ -183,17 +204,13 @@ def scrape_exact(url: str, quota: int) -> list[dict]:
     return out[:quota]
 
 def fetch_rss_exact(url: str, quota: int) -> list[dict]:
-    """
-    Lee un RSS y devuelve hasta `quota` items.
-    (No aplicamos filtro de path para RSS porque ya apunta a la sección correcta.)
-    """
     out: list[dict] = []
     try:
         r = get_html(url)
         if not r:
             return out
         feed = feedparser.parse(r.content)
-        cutoff = datetime.utcnow() - timedelta(days=2)  # ligera ventana por si publican lento
+        cutoff = datetime.utcnow() - timedelta(days=2)  # pequeña ventana
         for e in feed.entries:
             title = getattr(e, "title", "") or ""
             link = getattr(e, "link", "") or ""
@@ -219,7 +236,7 @@ def fetch_rss_exact(url: str, quota: int) -> list[dict]:
         log(f"[ERROR] fetch_rss_exact({url}) crashed:\n{traceback.format_exc()}")
     return out[:quota]
 
-# ============================= ENSAMBLADO =============================
+# ============================ ENSAMBLADO =============================
 def dedupe_keep_order(items: list[dict]) -> list[dict]:
     seen = set()
     out = []
@@ -263,22 +280,21 @@ def write_feed(country: str, items: list[dict]):
         f.write(xml)
     log(f"[OK] Wrote {path} ({len(items)} items)")
 
-def generate_country_feed(country: str, sources_with_quotas: list[tuple[str,int]]):
+def generate_country_feed(country: str, sources_with_quotas: list[tuple[str,int,bool]]):
     log(f"[RUN] {country}")
     collected: list[dict] = []
 
-    for src_url, quota in sources_with_quotas:
+    for src_url, quota, strict_prefix in sources_with_quotas:
         try:
             if src_url.endswith(".xml") or "rss" in src_url.lower() or "feed" in src_url.lower():
                 got = fetch_rss_exact(src_url, quota)
             else:
-                got = scrape_exact(src_url, quota)
-            log(f"[INFO] {country} | {src_url} → {len(got)}/{quota}")
+                got = scrape_source(src_url, quota, strict_prefix)
+            log(f"[INFO] {country} | {src_url} (strict={strict_prefix}) → {len(got)}/{quota}")
             collected.extend(got)
         except Exception:
             log(f"[ERROR] {country} source {src_url} crashed:\n{traceback.format_exc()}")
 
-    # Dedup global (por si alguna fuente repite el mismo enlace)
     final_items = dedupe_keep_order(collected)
     write_feed(country, final_items)
 
