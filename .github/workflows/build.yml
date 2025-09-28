@@ -55,31 +55,25 @@ jobs:
           git status
           echo "=== DIFF (working) ==="
           git diff --name-only
-
-      - name: Commit generated feeds (force add if ignored)
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Commit generated feeds
+    env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          # Si .gitignore bloquea, forzamos el add
-          git add -A || true
+          git add -A
           git add -f data/*.xml || true
-
-          echo "=== STAGED FILES ==="
-          git diff --cached --name-only || true
-
           if git diff --cached --quiet; then
-            echo "No changes to commit (nada staged)"
+            echo "No changes to commit"
           else
             git commit -m "Auto build feeds: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
             git pull --rebase origin main || true
             git push origin HEAD:main
           fi
-
-      - name: Final git status
-        run: |
-          git status
+          
+    - name: Final git status
+      run: |
+        git status
