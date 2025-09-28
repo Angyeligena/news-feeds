@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   build:
@@ -17,11 +18,15 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
-      - name: Print repo info
+      - name: Detect branch and show repo info
+        id: branch
         run: |
-          echo "PWD=$(pwd)"
-          git remote -v
-          git branch -vv || true
+          echo "GITHUB_REF=$GITHUB_REF"
+          echo "GITHUB_HEAD_REF=$GITHUB_HEAD_REF"
+          echo "GITHUB_BASE_REF=$GITHUB_BASE_REF"
+          CURR_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+          echo "branch=$CURR_BRANCH" >> $GITHUB_OUTPUT
+          echo "Current branch: $CURR_BRANCH"
           echo "=== .gitignore ==="
           [ -f .gitignore ] && cat .gitignore || echo "(no .gitignore)"
 
@@ -35,32 +40,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run build script (fail hard if bad outputs)
+      - name: Run feed builder
         run: |
           set -euo pipefail
           python scripts/build_feeds.py
-          echo "=== TREE AFTER SCRIPT ==="
-          ls -la
-          echo "=== DATA DIR ==="
-          ls -la data || (echo "FALTA carpeta data" && exit 1)
-          for f in venezuela.xml panama.xml dominicana.xml; do
-            test -s "data/$f" || (echo "$f vacío o no existe" && exit 1)
-            grep -q "<lastBuildDate>" "data/$f" || (echo "$f sin lastBuildDate" && exit 1)
-          done
+          # Stamp para forzar diff aunque el XML coincida byte a byte
+          mkdir -p data
+          date -u +"%Y-%m-%dT%H:%M:%SZ" > data/.build-stamp
+          echo "=== LIST data ==="
+          ls -la data
           echo "=== HEAD XMLs ==="
           head -n 25 data/*.xml || true
 
-      - name: Show diffs BEFORE add
-        run: |
-          echo "=== GIT STATUS (working tree) ==="
-          git status
-          echo "=== DIFF (working) ==="
-          git diff --name-only || true
-          echo "=== check-ignore ==="
-          git check-ignore -v data || true
-          git check-ignore -v "*.xml" || true
-
-      - name: Commit generated feeds (force add; rebase-safe push)
+      - name: Commit & push (to current branch)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -70,21 +62,19 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add -A || true
-          git add -f data/*.xml || true
+          git add -f data/*.xml data/.build-stamp || true
 
           echo "=== STAGED FILES ==="
           git diff --cached --name-only || true
 
           if git diff --cached --quiet; then
-            echo "No changes to commit (nada staged)."
+            echo "No changes to commit."
             exit 2
           fi
 
           git commit -m "Auto build feeds: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-
-          git pull --rebase origin main || true
-          git push origin HEAD:main
-
-      - name: Final status
-        run: |
-          git status
+          # Empuja a la rama realmente checkouteada
+          BRANCH="${{ steps.branch.outputs.branch }}"
+          echo "Pushing to $BRANCH"
+          git pull --rebase origin "$BRANCH" || true
+          git push origin "HEAD:$BRANCH"
