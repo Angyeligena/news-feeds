@@ -4,38 +4,8 @@
   <title>Noticias Venezuela</title>
   <link>https://github.com/</link>
   <description>Feed generado automáticamente</description>
-  <lastBuildDate>Sun, 28 Sep 2025 15:37:05 GMT</lastBuildDate>
-  <generator>news-feeds simple</generator>
-  <!-- build 2025-09-28T15:37:05.875245Z -->
-  <item>
-    <title>Académicos en la mira: los riesgos que enfrenta un docente universitario en Venezuela</title>
-    <link>https://talcualdigital.com/academicos-en-la-mira-los-riesgos-que-enfrenta-un-docente-universitario-en-venezuela/</link>
-    <pubDate>Sun, 28 Sep 2025 15:37:05 GMT</pubDate>
-    <category>talcualdigital.com</category>
-  </item>
-  <item>
-    <title>Noticias</title>
-    <link>https://talcualdigital.com/noticias/</link>
-    <pubDate>Sun, 28 Sep 2025 15:37:05 GMT</pubDate>
-    <category>talcualdigital.com</category>
-  </item>
-  <item>
-    <title>Lo Nuestro</title>
-    <link>https://talcualdigital.com/lo-nuestro/</link>
-    <pubDate>Sun, 28 Sep 2025 15:37:05 GMT</pubDate>
-    <category>talcualdigital.com</category>
-  </item>
-  <item>
-    <title>Migrantes</title>
-    <link>https://talcualdigital.com/migrantes/</link>
-    <pubDate>Sun, 28 Sep 2025 15:37:05 GMT</pubDate>
-    <category>talcualdigital.com</category>
-  </item>
-  <item>
-    <title>Fuera de Agenda</title>
-    <link>https://talcualdigital.com/fuera-de-agenda/</link>
-    <pubDate>Sun, 28 Sep 2025 15:37:05 GMT</pubDate>
-    <category>talcualdigital.com</category>
-  </item>
+  <lastBuildDate>Sun, 28 Sep 2025 21:15:06 GMT</lastBuildDate>
+  <generator>news-feeds GitHub Action</generator>
+  <!-- build 2025-09-28T21:15:06.009273Z -->
 </channel>
 </rss>
