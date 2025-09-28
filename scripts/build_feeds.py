@@ -341,32 +341,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-ChatGPT said:
-Thought for 11s
-
-Perfecto. Aquí tienes el script completo ajustado exactamente a lo que pediste:
-
-Trabaja solo sobre las URLs exactas que indicas (no a nivel de dominio).
-
-Aplica una cuota fija por cada fuente (5/5/5/5/5/3/3/3/3).
-
-Para fuentes HTML, hace scraping simple de h1/h2/article h2 a.
-
-Para la fuente RSS (diariolibre), usa feedparser.
-
-Filtra los enlaces para que empiecen con el prefijo exacto de la fuente (misma URL base y mismo path o subpath).
-
-Deduplica por URL y escribe siempre data/{pais}.xml.
-
-Copia/pega sobre scripts/build_feeds.py:
-
-# scripts/build_feeds.py
-# Feeds diarios PA/VE/DO SIN Google News.
-# Exact-match por URL (mismo host + prefijo de path) y CUOTAS por fuente.
-
-import os, re, html, hashlib, traceback
-from datetime import datetime, timedelta
-from urllib.parse import urlparse, urljoin, urlunparse, parse_qsl, urlencode
-from time import sleep
-
-import requests, feedparser
