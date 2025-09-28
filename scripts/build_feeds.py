@@ -1,9 +1,5 @@
 # scripts/build_feeds.py
-# Feeds diarios PA/VE/DO SIN Google News.
-# FIXES CLAVE:
-# - Dominio de la noticia = dominio del ENLACE (normalizado), no de la portada.
-# - Round-robin con tope por dominio + verificación final (cap duro).
-# - <category> usa dominio normalizado.
+# Feeds diarios PA/VE/DO SIN Google News y SIN Bloomberg/Bloomberg Línea.
 
 import os, re, html, hashlib, traceback, random
 from datetime import datetime, timedelta
@@ -16,18 +12,20 @@ from bs4 import BeautifulSoup
 OUTPUT_DIR = "data"
 REQUEST_TIMEOUT = 25
 RETRIES = 2
-HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; AngieNewsBot/1.2; +https://github.com/)"}
+HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; AngieNewsBot/1.4; +https://github.com/)"}
 
-# === FUENTES (tus links) ===
+# === FUENTES  ===
 SOURCES = {
     "venezuela": [
         "https://www.elnacional.com/",
         "https://talcualdigital.com/",
         "https://efectococuyo.com/",
+        # (eliminado) "https://www.bloomberglinea.com/latinoamerica/venezuela/",
     ],
     "panama": [
         "https://www.prensa.com/",
         "https://www.laestrella.com.pa/",
+        # (eliminado) "https://www.bloomberglinea.com/latinoamerica/panama/",
     ],
     "dominicana": [
         "https://www.diariolibre.com/rss/portada.xml",
@@ -37,17 +35,19 @@ SOURCES = {
     ],
 }
 
-# Límite total por país
+# LÍMITES
 LIMITS = {"venezuela": 10, "panama": 10, "dominicana": 10}
+HARD_MAX_PER_DOMAIN = 2              # diversidad por defecto (intentado primero)
+FALLBACK_WINDOW_HOURS = 48           # ampliar ventana si faltan piezas
+MIN_TITLE_LEN = 20                   # filtro de calidad
 
-# Tope por dominio dentro del feed final
-MAX_PER_DOMAIN = 4  # puedes bajarlo a 3 si quieres más diversidad
 
 SITE_SELECTORS = {
     # Venezuela
-    "www.elnacional.com": ["article h2 a", "h3 a", ".headline a"],
+    "www.elnacional.com": ["article h2 a", "h3 a", ".headline a", "h2 a[href]"],
     "talcualdigital.com": ["h2.entry-title a", "article h2 a", "div.post-title h2 a"],
     "efectococuyo.com": ["article h2 a", "h2 a[href*='/']"],
+
     # Panamá
     "www.prensa.com": [
         "h1 a[href^='https://www.prensa.com/']",
@@ -61,6 +61,7 @@ SITE_SELECTORS = {
         "article h2 a[href^='https://www.laestrella.com.pa/']",
         "a[href^='https://www.laestrella.com.pa/']:not([href*='/etiquetas/'])",
     ],
+
     # Dominicana
     "listindiario.com": ["h2 a[href]", "h3 a[href]", "article h2 a"],
     "www.elcaribe.com.do": ["h2 a[href]", "article h2 a", "a.post-title[href]"],
@@ -79,32 +80,43 @@ def clean_url(u: str) -> str:
         p = urlparse(u)
         qs = [(k, v) for k, v in parse_qsl(p.query)
               if not k.lower().startswith("utm") and k.lower() not in {"gclid","fbclid"}]
-        return urlunparse((p.scheme or "https", p.netloc.lower(), p.path, "", urlencode(qs), ""))
+        return urlunparse((p.scheme or "https", p.netloc.lower(), p.path.rstrip("/"), "", urlencode(qs), ""))
+    except Exception:
+        return u
+
+def url_key(u: str) -> str:
+    try:
+        p = urlparse(clean_url(u))
+        return f"{strip_www(p.netloc)}{p.path}"
     except Exception:
         return u
 
 def norm_text(s: str) -> str:
-    return re.sub(r"\s+", " ", (s or "")).strip().lower()
+    s = (s or "")
+    s = re.sub(r"\b(LIVE|UPDATE|BREAKING|EN VIVO|ÚLTIMA HORA|ACTUALIZACIÓN)\b[:\-–]*\s*", "", s, flags=re.I)
+    return re.sub(r"\s+", " ", s).strip().lower()
 
 def abs_url(base: str, href: str) -> str:
     if not href: return ""
     if href.startswith("//"): return "https:" + href
     return urljoin(base, href)
 
-def get_html(url: str) -> bytes | None:
+def get_response(url: str):
     for i in range(RETRIES + 1):
         try:
             r = requests.get(url, headers=HEADERS, timeout=REQUEST_TIMEOUT)
             r.raise_for_status()
-            return r.content
+            if not r.encoding or r.encoding.lower() == "iso-8859-1":
+                r.encoding = r.apparent_encoding or "utf-8"
+            return r
         except Exception as e:
             log(f"[WARN] GET fail ({i+1}/{RETRIES+1}) {url}: {e}")
             sleep(1.2)
     return None
 
 def fetch_html(url: str) -> BeautifulSoup | None:
-    c = get_html(url)
-    return BeautifulSoup(c, "html.parser") if c else None
+    r = get_response(url)
+    return BeautifulSoup(r.text, "html.parser") if r else None
 
 # ----------------- scraping / rss -----------------
 def scrape_site(url: str, soft_limit: int) -> list[dict]:
@@ -119,7 +131,7 @@ def scrape_site(url: str, soft_limit: int) -> list[dict]:
         host_for_selectors = parsed.netloc.lower()
         selectors = SITE_SELECTORS.get(host_for_selectors, []) + ["h1 a[href]", "h2 a[href]", "article h2 a"]
 
-        seen_links = set()
+        seen_urlk = set()
         for sel in selectors:
             hits = 0
             for tag in soup.select(sel):
@@ -129,20 +141,24 @@ def scrape_site(url: str, soft_limit: int) -> list[dict]:
                     a = tag.find("a", href=True)
                     if a:
                         link = a["href"]
-                        if not text:
-                            text = a.get_text(strip=True)
+                        text = text or a.get_text(strip=True)
                 if not text or not link:
                     continue
                 full = abs_url(base, link)
-                if full in seen_links: continue
-                seen_links.add(full)
+                k = url_key(full)
+                if k in seen_urlk:
+                    continue
+                seen_urlk.add(k)
+                dom = strip_www(urlparse(full).netloc)
+                if dom in BLOCKED_DOMAINS:
+                    continue  # BLOOMBERG FUERA
 
-                link_host = strip_www(urlparse(full).netloc)
                 out.append({
                     "title": text,
                     "link": clean_url(full),
                     "date": datetime.utcnow(),
-                    "domain": link_host,   # <-- dominio del ENLACE, NO de la portada
+                    "domain": dom,
+                    "urlk": k,
                 })
                 hits += 1
                 if len(out) >= soft_limit * 4: break
@@ -151,49 +167,33 @@ def scrape_site(url: str, soft_limit: int) -> list[dict]:
 
         # filtro de calidad
         before = len(out)
-        out = [it for it in out if len(it["title"]) >= 25]
-        log(f"[INFO] {host_for_selectors} filter >=25 chars: {before} → {len(out)}")
+        out = [it for it in out if len(it["title"]) >= MIN_TITLE_LEN]
+        log(f"[INFO] {host_for_selectors} filter >={MIN_TITLE_LEN} chars: {before} → {len(out)}")
 
-        # fallback si vacío
-        if not out:
-            fb = 0
-            for a in soup.select("a[href]"):
-                href = a.get("href",""); txt=a.get_text(strip=True)
-                full = abs_url(base, href)
-                link_host = strip_www(urlparse(full).netloc)
-                if link_host != strip_www(host_for_selectors) or len(txt) < 35: 
-                    continue
-                out.append({
-                    "title": txt,
-                    "link": clean_url(full),
-                    "date": datetime.utcnow(),
-                    "domain": link_host,
-                })
-                fb += 1
-                if len(out) >= soft_limit * 2: break
-            log(f"[INFO] {host_for_selectors} fallback anchors → {fb}")
-
-        # dedupe por (titulo+dominio)
-        uniq, dedup = set(), []
+        # dedupe por URL y por (titulo+dominio)
+        uniq_url, uniq_td, dedup = set(), set(), []
         for it in out:
-            key = hashlib.md5((norm_text(it["title"])+"|"+it["domain"]).encode()).hexdigest()
-            if key in uniq: continue
-            uniq.add(key)
-            dedup.append(it)
+            kurl = it["urlk"]
+            ktd = hashlib.md5((norm_text(it["title"])+"|"+it["domain"]).encode()).hexdigest()
+            if kurl in uniq_url or ktd in uniq_td: continue
+            uniq_url.add(kurl); uniq_td.add(ktd); dedup.append(it)
         return dedup[: soft_limit * 2]
     except Exception:
         log(f"[ERROR] scrape_site({url}) crashed:\n{traceback.format_exc()}")
         return out
 
-def fetch_rss(url: str, cutoff_utc: datetime, soft_limit: int) -> list[dict]:
+def fetch_rss(url: str, cutoff_utc: datetime, soft_limit: int, allow_widen=False) -> list[dict]:
     out: list[dict] = []
     try:
-        c = get_html(url)
-        if not c:
+        r = get_response(url)
+        if not r:
             log(f"[WARN] No RSS for {url}")
             return out
-        feed = feedparser.parse(c)
-        for e in feed.entries[: soft_limit * 6]:  # overfetch
+        feed = feedparser.parse(r.content)
+        # define cutoff (24h normal; 48h si widen=True)
+        cutoff = cutoff_utc if not allow_widen else datetime.utcnow() - timedelta(hours=FALLBACK_WINDOW_HOURS)
+        tmp = []
+        for e in feed.entries[: soft_limit * 8]:
             title = getattr(e,"title","") or ""
             link  = getattr(e,"link","") or ""
             if not title or not link: continue
@@ -203,90 +203,127 @@ def fetch_rss(url: str, cutoff_utc: datetime, soft_limit: int) -> list[dict]:
                 dt = datetime(*e.updated_parsed[:6])
             else:
                 dt = datetime.utcnow()
-            if dt < cutoff_utc: continue
+            if dt < cutoff: continue
             dom = strip_www(urlparse(link).netloc or urlparse(url).netloc)
-            out.append({
+            if dom in BLOCKED_DOMAINS: continue
+            tmp.append({
                 "title": title,
                 "link": clean_url(link),
                 "date": dt,
                 "domain": dom,
+                "urlk": url_key(link),
             })
-        log(f"[INFO] RSS {url} → {len(out)} after cutoff")
-        return out
+        log(f"[INFO] RSS {url} → {len(tmp)} after cutoff({24 if not allow_widen else FALLBACK_WINDOW_HOURS}h)")
+
+        # dedupe y limitar
+        uniq_url, uniq_td, dedup = set(), set(), []
+        for it in sorted(tmp, key=lambda x: x["date"], reverse=True):
+            kurl = it["urlk"]
+            ktd = hashlib.md5((norm_text(it["title"])+"|"+it["domain"]).encode()).hexdigest()
+            if kurl in uniq_url or ktd in uniq_td: continue
+            uniq_url.add(kurl); uniq_td.add(ktd); dedup.append(it)
+        return dedup[: soft_limit * 3]
     except Exception:
         log(f"[ERROR] fetch_rss({url}) crashed:\n{traceback.format_exc()}")
         return out
 
-# ----------------- mezcla justa con CAP -----------------
-def mix_by_domain(items: list[dict], limit_total: int, max_per_domain: int) -> list[dict]:
+# ----------------- mezcla justa con CAP dinámico -----------------
+def mix_with_cap(items: list[dict], limit_total: int, start_cap: int) -> list[dict]:
     """
-    1) Dedupe global por (titulo normalizado + dominio)
-    2) Bucket por dominio
-    3) Round-robin entre dominios respetando max_per_domain
-    4) Verificación final de cap (por si acaso)
+    1) Dedupe global por URL y (titulo+dominio)
+    2) Buckets por dominio
+    3) Intentar round-robin con cap = start_cap; si no alcanza, subir cap (start_cap+1, +2, ...)
     """
-    # 1) dedupe global
-    seen, pool = set(), []
+    # dedupe global
+    seen_url, seen_td, pool = set(), set(), []
     for it in sorted(items, key=lambda x: x["date"], reverse=True):
-        key = hashlib.md5((norm_text(it["title"])+"|"+it["domain"]).encode()).hexdigest()
-        if key in seen: continue
-        seen.add(key)
-        pool.append(it)
+        kurl = it.get("urlk") or url_key(it["link"])
+        ktd = hashlib.md5((norm_text(it["title"])+"|"+it["domain"]).encode()).hexdigest()
+        if kurl in seen_url or ktd in seen_td: continue
+        seen_url.add(kurl); seen_td.add(ktd); pool.append(it)
 
-    # 2) buckets por dominio
+    # buckets
     buckets = {}
     for it in pool:
         d = strip_www(it["domain"])
+        if d in BLOCKED_DOMAINS:  # seguridad extra
+            continue
         buckets.setdefault(d, []).append(it)
     for d in buckets:
         buckets[d].sort(key=lambda x: x["date"], reverse=True)
 
-    # 3) round-robin
-    domains = list(buckets.keys())
-    random.shuffle(domains)
-    picked = []
-    counts = {d: 0 for d in domains}
-    i = 0
-    while len(picked) < limit_total and domains:
-        d = domains[i % len(domains)]
-        if buckets[d] and counts[d] < max_per_domain:
-            picked.append(buckets[d].pop(0))
-            counts[d] += 1
-        if not buckets[d] or counts[d] >= max_per_domain:
-            domains.pop(i % len(domains))
+    def round_robin(cap: int) -> list[dict]:
+        domains = list(buckets.keys())
+        random.shuffle(domains)
+        picked, counts = [], {d:0 for d in domains}
+        i = 0
+        while len(picked) < limit_total and domains:
+            d = domains[i % len(domains)]
+            if buckets[d] and counts[d] < cap:
+                picked.append(buckets[d].pop(0))
+                counts[d] += 1
+            if not buckets[d] or counts[d] >= cap:
+                domains.pop(i % len(domains))
+            else:
+                i += 1
+        # backfill respetando cap
+        if len(picked) < limit_total:
+            rest = []
+            for d, arr in buckets.items():
+                rest.extend(arr)
+            rest.sort(key=lambda x: x["date"], reverse=True)
+            for it in rest:
+                d = strip_www(it["domain"])
+                if counts.get(d,0) >= cap: continue
+                picked.append(it)
+                counts[d] = counts.get(d,0) + 1
+                if len(picked) >= limit_total: break
+        return picked[:limit_total]
+
+    cap = start_cap
+    while True:
+        # clona buckets (no mutar original al iterar caps)
+        snapshot = {d:list(arr) for d,arr in buckets.items()}
+        picked = []
+        domains = list(snapshot.keys())
+        random.shuffle(domains)
+        counts = {d:0 for d in domains}
+        i = 0
+        while len(picked) < limit_total and domains:
+            d = domains[i % len(domains)]
+            if snapshot[d] and counts[d] < cap:
+                picked.append(snapshot[d].pop(0))
+                counts[d] += 1
+            if not snapshot[d] or counts[d] >= cap:
+                domains.pop(i % len(domains))
+            else:
+                i += 1
+        # backfill
+        if len(picked) < limit_total:
+            rest = []
+            for d, arr in snapshot.items():
+                rest.extend(arr)
+            rest.sort(key=lambda x: x["date"], reverse=True)
+            for it in rest:
+                d = strip_www(it["domain"])
+                if counts.get(d,0) >= cap: continue
+                picked.append(it)
+                counts[d] = counts.get(d,0) + 1
+                if len(picked) >= limit_total: break
+
+        if len(picked) >= limit_total or cap >= limit_total:
+            # recorte final defensivo por cap
+            final, cnt = [], {}
+            for it in picked:
+                d = strip_www(it["domain"])
+                if cnt.get(d,0) >= cap: continue
+                final.append(it); cnt[d] = cnt.get(d,0) + 1
+                if len(final) >= limit_total: break
+            return final[:limit_total]
         else:
-            i += 1
+            cap += 1  # sube cap para poder completar
 
-    # 4) backfill (sin romper el cap)
-    if len(picked) < limit_total:
-        # candidatos restantes
-        rest = []
-        for d, arr in buckets.items():
-            rest.extend(arr)
-        rest.sort(key=lambda x: x["date"], reverse=True)
-        for it in rest:
-            d = strip_www(it["domain"])
-            if counts.get(d,0) >= max_per_domain:
-                continue
-            picked.append(it)
-            counts[d] = counts.get(d,0) + 1
-            if len(picked) >= limit_total:
-                break
-
-    # 5) verificación cap duro
-    final, cnt = [], {}
-    for it in picked:
-        d = strip_www(it["domain"])
-        if cnt.get(d,0) >= max_per_domain:
-            continue
-        final.append(it)
-        cnt[d] = cnt.get(d,0) + 1
-        if len(final) >= limit_total:
-            break
-
-    return final[:limit_total]
-
-# ----------------- RSS writer -----------------
+# ----------------- writer -----------------
 def make_rss(country: str, items: list[dict]) -> str:
     now_http = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT")
     build_comment = f"<!-- build {datetime.utcnow().isoformat()}Z -->"
@@ -316,58 +353,55 @@ def make_rss(country: str, items: list[dict]) -> str:
 def write_feed(country: str, items: list[dict]):
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     path = os.path.join(OUTPUT_DIR, f"{country}.xml")
-    xml = make_rss(country, items)
     with open(path, "w", encoding="utf-8", newline="\n") as f:
-        f.write(xml)
+        f.write(make_rss(country, items))
     log(f"[OK] Wrote {path} ({len(items)} items)")
 
 # ----------------- pipeline por país -----------------
-def generate_country_feed(country: str, urls: list[str], limit_total: int):
-    log(f"[RUN] Generating {country} (limit {limit_total}, max/domain {MAX_PER_DOMAIN})")
-    items, cutoff = [], datetime.utcnow() - timedelta(days=1)
-
+def collect_items(urls: list[str], soft_limit: int, widen: bool=False) -> list[dict]:
+    cutoff_24h = datetime.utcnow() - timedelta(hours=24)
+    items = []
     for url in urls:
         try:
-            soft_limit = max(limit_total, 10)
             if url.endswith(".xml") or "rss" in url.lower() or "feed" in url.lower():
-                got = fetch_rss(url, cutoff, soft_limit)
+                got = fetch_rss(url, cutoff_utc=cutoff_24h, soft_limit=soft_limit, allow_widen=widen)
             else:
-                got = scrape_site(url, soft_limit)
+                got = scrape_site(url, soft_limit=soft_limit)
             items += got
-            log(f"[INFO] {country} source {url} → {len(got)} items")
+            log(f"[INFO] source {url} → {len(got)} items")
         except Exception:
-            log(f"[ERROR] {country} source {url} crashed:\n{traceback.format_exc()}")
+            log(f"[ERROR] source {url} crashed:\n{traceback.format_exc()}")
+    # quitar cualquier residuo bloqueado (seguridad extra)
+    items = [it for it in items if strip_www(urlparse(it["link"]).netloc) not in BLOCKED_DOMAINS]
+    return items
 
-    if not items:
-        log(f"[WARN] {country}: no items at all → placeholder")
-        items = [{
-            "title": f"No se pudieron extraer titulares para {country} en este run",
-            "link": "https://example.com/",
-            "date": datetime.utcnow(),
-            "domain": "generator",
-        }]
+def generate_country_feed(country: str, urls: list[str], limit_total: int):
+    log(f"[RUN] {country} - limit {limit_total}, cap {HARD_MAX_PER_DOMAIN}, no Bloomberg")
+    soft_limit = max(limit_total, 12)
 
-    mixed = mix_by_domain(items, limit_total, MAX_PER_DOMAIN)
+    # 1) recolecta 24h
+    items = collect_items(urls, soft_limit=soft_limit, widen=False)
 
-    # ASSERT final: nadie supera cap
-    final_counts = {}
-    for it in mixed:
-        d = strip_www(it["domain"])
-        final_counts[d] = final_counts.get(d,0) + 1
-    offenders = [f"{d}:{c}" for d,c in final_counts.items() if c > MAX_PER_DOMAIN]
-    if offenders:
-        log(f"[WARN] cap offenders (shouldn't happen): {', '.join(offenders)}")
-        # recorta si algo se coló (defensivo)
-        trimmed, seen_cnt = [], {}
-        for it in mixed:
-            d = strip_www(it["domain"])
-            if seen_cnt.get(d,0) >= MAX_PER_DOMAIN:
-                continue
-            trimmed.append(it)
-            seen_cnt[d] = seen_cnt.get(d,0) + 1
-            if len(trimmed) >= limit_total:
-                break
-        mixed = trimmed
+    # 2) si faltan piezas, intenta con ventana ampliada 48h (solo RSS respeta ventana)
+    if len(items) < limit_total:
+        log(f"[INFO] {country} shortage {len(items)}/{limit_total} → widen window")
+        items += collect_items([u for u in urls if u.endswith(".xml") or "rss" in u.lower() or "feed" in u.lower()],
+                               soft_limit=soft_limit, widen=True)
+
+    # 3) mezcla con cap dinámico (empieza en 2 y sube si falta)
+    mixed = mix_with_cap(items, limit_total=limit_total, start_cap=HARD_MAX_PER_DOMAIN)
+
+    # 4) si aún no alcanza, mete placeholder(s) para no romper el feed
+    if len(mixed) < limit_total:
+        log(f"[WARN] {country} final shortage {len(mixed)}/{limit_total} → placeholders")
+        while len(mixed) < limit_total:
+            mixed.append({
+                "title": f"No se encontraron más titulares recientes para {country}",
+                "link": "https://example.com/",
+                "date": datetime.utcnow(),
+                "domain": "generator",
+                "urlk": "generator",
+            })
 
     write_feed(country, mixed[:limit_total])
 
@@ -383,6 +417,7 @@ def main():
                 "link": "https://example.com/",
                 "date": datetime.utcnow(),
                 "domain": "generator",
+                "urlk": "generator",
             }])
 
 if __name__ == "__main__":
