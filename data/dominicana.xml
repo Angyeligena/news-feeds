@@ -1,37 +1,61 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
 <channel>
-<title>Noticias Dominicana</title>
-<link>https://github.com/</link>
-<description>Feed generado automáticamente</description>
-
-<item>
-<title>No al parasitismo</title>
-<link>https://hoy.com.do/no-al-parasitismo/</link>
-<pubDate>Sun, 28 Sep 2025 09:00:00 GMT</pubDate>
-</item>
-
-<item>
-<title>Rabia: síntomas, prevención y tratamiento en el Día Mundial de concienciación</title>
-<link>https://hoy.com.do/rabia-sintomas-prevencion-y-tratamiento-en-el-dia-mundial-de-concienciacion/</link>
-<pubDate>Sun, 28 Sep 2025 08:20:00 GMT</pubDate>
-</item>
-
-<item>
-<title>Día Internacional de la Prevención del Embarazo en Adolescentes: la geografía de la desigualdad</title>
-<link>https://hoy.com.do/dia-internacional-de-la-prevencion-del-embarazo-en-adolescentes-la-geografia-de-la-desigualdad/</link>
-<pubDate>Sun, 28 Sep 2025 08:10:00 GMT</pubDate>
-</item>
-
-<item>
-<title>La diplomacia de los buques de guerra</title>
-<link>https://hoy.com.do/la-diplomacia-de-los-buques-de-guerra/</link>
-<pubDate>Sun, 28 Sep 2025 07:40:00 GMT</pubDate>
-</item>
-
-<item>
-<title>#SinFiltro: Sentido común</title>
-<link>https://hoy.com.do/sinfiltro-sentido-comun/</link>
-<pubDate>Sun, 28 Sep 2025 07:15:00 GMT</pubDate>
-</item>
-</channel></rss>
+  <title>Noticias Dominicana</title>
+  <link>https://github.com/</link>
+  <description>Feed generado automáticamente</description>
+  <lastBuildDate>Sun, 28 Sep 2025 12:25:08 GMT</lastBuildDate>
+  <generator>news-feeds GitHub Action</generator>
+  <!-- build 2025-09-28T12:25:08.257012Z -->
+  <item>
+    <title>El petróleo de Texas baja un 0.06%, hasta los US$62.64 el barril</title>
+    <link>https://eldinero.com.do/338084/el-petroleo-de-texas-baja-un-0-06-hasta-los-us62-64-el-barril/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:08 GMT</pubDate>
+  </item>
+  <item>
+    <title>Entidades del sector energía, minería e hidrocarburos participarán Feria Internacional del Libro Santo Domingo</title>
+    <link>https://eldinero.com.do/338310/entidades-del-sector-energia-mineria-e-hidrocarburos-participaran-feria-internacional-del-libro-santo-domingo/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:08 GMT</pubDate>
+  </item>
+  <item>
+    <title>SIBA Energy avanza en la etapa final de su ciclo combinado</title>
+    <link>https://eldinero.com.do/338398/siba-energy-avanza-en-la-etapa-final-de-su-ciclo-combinado/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:08 GMT</pubDate>
+  </item>
+  <item>
+    <title>Gobierno deja sin variación precios de combustibles</title>
+    <link>https://eldinero.com.do/338505/gobierno-deja-sin-variacion-precios-de-combustibles/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:08 GMT</pubDate>
+  </item>
+  <item>
+    <title>Banreservas reafirma liderazgo en inversiones turísticas en Miches tras negociaciones en Top Resa</title>
+    <link>https://eldinero.com.do/338481/banreservas-reafirma-liderazgo-en-inversiones-turisticas-en-miches-tras-negociaciones-en-top-resa/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:08 GMT</pubDate>
+  </item>
+  <item>
+    <title>Bagrícola y TNR destinan RD$323 millones para proyectos solares en Línea Noroeste</title>
+    <link>https://eldinero.com.do/338519/bagricola-y-tnr-destinan-rd323-millones-para-proyectos-solares-en-linea-noroeste/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:08 GMT</pubDate>
+  </item>
+  <item>
+    <title>EE.UU. es la principal fuente de inversión extranjera en RD, destaca Embajada</title>
+    <link>https://eldinero.com.do/338583/ee-uu-es-la-principal-fuente-de-inversion-extranjera-en-rd-destaca-embajada/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:08 GMT</pubDate>
+  </item>
+  <item>
+    <title>Joel Santos destaca potencial de la artesanía del larimar en el sector turístico dominicano</title>
+    <link>https://eldinero.com.do/337878/joel-santos-destaca-potencial-de-la-artesania-del-larimar-en-el-sector-turistico-dominicano/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:08 GMT</pubDate>
+  </item>
+  <item>
+    <title>Arajet es reconocida como empresa del año en Sanford-Orlando</title>
+    <link>https://eldinero.com.do/338036/arajet-es-reconocida-como-empresa-del-ano-en-sanford-orlando/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:08 GMT</pubDate>
+  </item>
+  <item>
+    <title>Infotep y Fundación Genera ITM lanzan diplomado especializado en turismo de cruceros en Pedernales</title>
+    <link>https://eldinero.com.do/338051/infotep-y-fundacion-genera-itm-lanzan-diplomado-especializado-en-turismo-de-cruceros-en-pedernales/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:08 GMT</pubDate>
+  </item>
+</channel>
+</rss>

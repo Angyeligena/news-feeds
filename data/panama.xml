@@ -1,7 +1,61 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
 <channel>
-<title>Noticias Panama</title>
-<link>https://github.com/</link>
-<description>Feed generado automáticamente</description>
-</channel></rss>
+  <title>Noticias Panama</title>
+  <link>https://github.com/</link>
+  <description>Feed generado automáticamente</description>
+  <lastBuildDate>Sun, 28 Sep 2025 12:25:02 GMT</lastBuildDate>
+  <generator>news-feeds GitHub Action</generator>
+  <!-- build 2025-09-28T12:25:02.343464Z -->
+  <item>
+    <title>Los salarios que vencen a la inflación en la era Milei y los que pierden, según Luis Campos</title>
+    <link>https://www.bloomberglinea.com/latinoamerica/argentina/los-salarios-que-vencen-a-la-inflacion-en-la-era-milei-y-los-que-pierden-segun-luis-campos/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:02 GMT</pubDate>
+  </item>
+  <item>
+    <title>“Pasamos a estar más long dólar”, dice Nicolás Cappella, desde la mesa de Grupo IEB</title>
+    <link>https://www.bloomberglinea.com/latinoamerica/argentina/pasamos-a-estar-mas-long-dolar-dice-nicolas-cappella-desde-la-mesa-de-grupo-ieb/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:02 GMT</pubDate>
+  </item>
+  <item>
+    <title>“La duda es la contundencia del triunfo del Gobierno”, dice analista político Ignacio Labaqui</title>
+    <link>https://www.bloomberglinea.com/latinoamerica/argentina/la-duda-es-la-contundencia-del-triunfo-del-gobierno-dice-analista-politico-ignacio-labaqui/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:02 GMT</pubDate>
+  </item>
+  <item>
+    <title>Cómo cubrirse antes de las elecciones bonaerenses, según Rafael di Giorno, de Proficio</title>
+    <link>https://www.bloomberglinea.com/latinoamerica/argentina/como-cubrirse-antes-de-las-elecciones-bonaerenses-segun-rafael-di-giorno-de-proficio/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:02 GMT</pubDate>
+  </item>
+  <item>
+    <title>¿Debería Elon Musk recibir 1 billón de dólares?</title>
+    <link>https://www.bloomberglinea.com/video/2025/09/06/deberia-elon-musk-recibir-1-billon-de-dolares/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:02 GMT</pubDate>
+  </item>
+  <item>
+    <title>Decisión sobre la tasa de la Reserva Federal prevista para el miércoles: qué esperar</title>
+    <link>https://www.bloomberglinea.com/video/2025/09/15/decision-sobre-la-tasa-de-la-reserva-federal-prevista-para-el-miercoles-que-esperar/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:02 GMT</pubDate>
+  </item>
+  <item>
+    <title>¿Un dolor a corto plazo para Argentina,  pero un beneficio a largo plazo?  La apuesta económica de M</title>
+    <link>https://www.bloomberglinea.com/video/2025/09/20/un-dolor-a-corto-plazo-para-argentina-pero-un-beneficio-a-largo-plazo-la-apuesta-economica-de-m/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:02 GMT</pubDate>
+  </item>
+  <item>
+    <title>Larry Summers sobre Powell: La Fed se enfrenta a un dilema sin precedentes entre inflación y empleo</title>
+    <link>https://www.bloomberglinea.com/video/2025/09/21/larry-summers-sobre-powell-la-fed-se-enfrenta-a-un-dilema-sin-precedentes-entre-inflacion-y-empleo/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:02 GMT</pubDate>
+  </item>
+  <item>
+    <title>Colombia y Costa Rica impulsan los niveles de home office en América Latina, según la OIT</title>
+    <link>https://www.bloomberglinea.com/actualidad/colombia-y-costa-rica-impulsan-los-niveles-de-home-office-en-america-latina-segun-la-oit/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:02 GMT</pubDate>
+  </item>
+  <item>
+    <title>¿Por qué S&amp;P Global y Fitch dudan que México estabilice su deuda en 2026?</title>
+    <link>https://www.bloomberglinea.com/latinoamerica/mexico/por-que-sp-global-y-fitch-dudan-que-mexico-estabilice-su-deuda-en-2026/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:02 GMT</pubDate>
+  </item>
+</channel>
+</rss>

@@ -1,67 +1,61 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
 <channel>
-<title>Noticias Venezuela</title>
-<link>https://github.com/</link>
-<description>Feed generado automáticamente</description>
-
-<item>
-<title>La diáspora como potencia global, por Alejandro Oropeza G.</title>
-<link>https://talcualdigital.com/la-diaspora-como-potencia-global-por-alejandro-oropeza-g/</link>
-<pubDate>Sun, 28 Sep 2025 06:00:18 GMT</pubDate>
-</item>
-
-<item>
-<title>Más allá de la conmoción: un llamado a la madurez política, por Stalin González</title>
-<link>https://talcualdigital.com/mas-alla-de-la-conmocion-un-llamado-a-la-madurez-politica-por-stalin-gonzalez/</link>
-<pubDate>Sun, 28 Sep 2025 05:30:03 GMT</pubDate>
-</item>
-
-<item>
-<title>Maduro decreta otra ley: más tortura y muertes</title>
-<link>https://www.elnacional.com/2025/09/maduro-decreta-otra-ley-mas-tortura-y-muertes/</link>
-<pubDate>Sun, 28 Sep 2025 05:24:00 GMT</pubDate>
-</item>
-
-<item>
-<title>Despejar la oscuridad</title>
-<link>https://www.elnacional.com/2025/09/despejar-la-oscuridad/</link>
-<pubDate>Sun, 28 Sep 2025 05:23:00 GMT</pubDate>
-</item>
-
-<item>
-<title>Incertidumbre</title>
-<link>https://www.elnacional.com/2025/09/incertidumbre-4/</link>
-<pubDate>Sun, 28 Sep 2025 05:22:00 GMT</pubDate>
-</item>
-
-<item>
-<title>Dios a los templos y sexo a los aposentos</title>
-<link>https://www.elnacional.com/2025/09/dios-a-los-templos-y-sexo-a-los-aposentos/</link>
-<pubDate>Sun, 28 Sep 2025 05:21:00 GMT</pubDate>
-</item>
-
-<item>
-<title>Los creyones de Josefina Passadori</title>
-<link>https://www.elnacional.com/2025/09/los-creyones-de-josefina-pasadori/</link>
-<pubDate>Sun, 28 Sep 2025 05:20:00 GMT</pubDate>
-</item>
-
-<item>
-<title>Ser república es cosa seria: el caso Venezuela</title>
-<link>https://www.elnacional.com/2025/09/ser-republica-es-cosa-seria-el-caso-venezuela/</link>
-<pubDate>Sun, 28 Sep 2025 05:20:00 GMT</pubDate>
-</item>
-
-<item>
-<title>Agua y paja</title>
-<link>https://www.elnacional.com/2025/09/agua-y-paja/</link>
-<pubDate>Sun, 28 Sep 2025 05:19:00 GMT</pubDate>
-</item>
-
-<item>
-<title>Nuestras asociaciones civiles</title>
-<link>https://www.elnacional.com/2025/09/nuestras-asociaciones-civiles/</link>
-<pubDate>Sun, 28 Sep 2025 05:19:00 GMT</pubDate>
-</item>
-</channel></rss>
+  <title>Noticias Venezuela</title>
+  <link>https://github.com/</link>
+  <description>Feed generado automáticamente</description>
+  <lastBuildDate>Sun, 28 Sep 2025 12:25:00 GMT</lastBuildDate>
+  <generator>news-feeds GitHub Action</generator>
+  <!-- build 2025-09-28T12:25:00.761763Z -->
+  <item>
+    <title>Decisión sobre la tasa de la Reserva Federal prevista para el miércoles: qué esperar</title>
+    <link>https://www.bloomberglinea.com/video/2025/09/15/decision-sobre-la-tasa-de-la-reserva-federal-prevista-para-el-miercoles-que-esperar/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:00 GMT</pubDate>
+  </item>
+  <item>
+    <title>¿Un dolor a corto plazo para Argentina,  pero un beneficio a largo plazo?  La apuesta económica de M</title>
+    <link>https://www.bloomberglinea.com/video/2025/09/20/un-dolor-a-corto-plazo-para-argentina-pero-un-beneficio-a-largo-plazo-la-apuesta-economica-de-m/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:00 GMT</pubDate>
+  </item>
+  <item>
+    <title>Larry Summers sobre Powell: La Fed se enfrenta a un dilema sin precedentes entre inflación y empleo</title>
+    <link>https://www.bloomberglinea.com/video/2025/09/21/larry-summers-sobre-powell-la-fed-se-enfrenta-a-un-dilema-sin-precedentes-entre-inflacion-y-empleo/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:00 GMT</pubDate>
+  </item>
+  <item>
+    <title>La fortuna de Masayoshi Son alcanza US$39.000 millones gracias a sus apuestas en IA</title>
+    <link>https://www.bloomberglinea.com/negocios/la-fortuna-de-masayoshi-son-alcanza-us39000-millones-gracias-a-sus-apuestas-en-ia/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:00 GMT</pubDate>
+  </item>
+  <item>
+    <title>El S&amp;P 500 se recupera tras tres días de caídas gracias a los datos de inflación</title>
+    <link>https://www.bloomberglinea.com/mercados/las-acciones-frenan-su-caida-tras-el-informe-de-inflacion-de-eeuu/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:00 GMT</pubDate>
+  </item>
+  <item>
+    <title>Trump impondrá un arancel del 100% a medicamentos de marca que no se fabriquen en EE.UU.</title>
+    <link>https://www.bloomberglinea.com/mundo/estados-unidos/trump-impondra-un-arancel-del-100-a-medicamentos-de-marca-que-no-se-fabriquen-en-eeuu/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:00 GMT</pubDate>
+  </item>
+  <item>
+    <title>Cuando la velocidad exige millones: ¿por qué la Fórmula 1 es el deporte más caro?</title>
+    <link>https://www.bloomberglinea.com/estilo-de-vida/cuando-la-velocidad-exige-millones-por-que-la-formula-1-es-el-deporte-mas-caro/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:00 GMT</pubDate>
+  </item>
+  <item>
+    <title>SoftBank y Ark negocian ronda de hasta US$20.000 millones para Tether</title>
+    <link>https://www.bloomberglinea.com/negocios/softbank-y-ark-negocian-ronda-de-hasta-us20000-millones-para-tether/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:00 GMT</pubDate>
+  </item>
+  <item>
+    <title>Donald Trump resta importancia al riesgo de cierre del gobierno y culpa a los demócratas</title>
+    <link>https://www.bloomberglinea.com/mundo/estados-unidos/donald-trump-resta-importancia-al-riesgo-de-cierre-del-gobierno-y-culpa-a-los-democratas/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:00 GMT</pubDate>
+  </item>
+  <item>
+    <title>Misión de la ONU dice que represión en Venezuela se intensificó tras las elecciones de 2024</title>
+    <link>https://www.bloomberglinea.com/latinoamerica/venezuela/mision-de-la-onu-dice-que-represion-en-venezuela-se-intensifico-tras-las-elecciones-de-2024/</link>
+    <pubDate>Sun, 28 Sep 2025 12:25:00 GMT</pubDate>
+  </item>
+</channel>
+</rss>
