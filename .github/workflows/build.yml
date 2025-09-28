@@ -36,11 +36,23 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/*.xml || true
-          git commit -m "Auto build feeds: $(date -u +'%Y-%m-%dT%H:%M:%SZ')" || echo "No changes to commit"
-          git push origin HEAD:main
+
+          # Agrega TODO (no solo data/*.xml) para evitar el problema del glob.
+          git add -A
+
+          # Solo commitea si hay cambios staged
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Auto build feeds: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            # Evita non-fast-forward si corren builds seguidos
+            git pull --rebase origin main || true
+            git push origin HEAD:main
+          fi
 
       - name: Show generated files
         run: |
