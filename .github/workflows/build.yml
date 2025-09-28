@@ -41,3 +41,14 @@ jobs:
           git add data/*.xml || true
           git commit -m "Auto build feeds: $(date -u +'%Y-%m-%dT%H:%M:%SZ')" || echo "No changes to commit"
           git push origin HEAD:main
+
+      - name: Show generated files
+        run: |
+          echo "=== LIST DATA DIR ==="
+          ls -la data || ls -la
+          echo "=== HEAD OF XMLs ==="
+          for f in data/*.xml; do
+            echo "---- $f ----"
+            head -n 40 "$f" || true
+          done
+
