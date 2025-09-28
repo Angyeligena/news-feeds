@@ -18,18 +18,18 @@ HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; AngieNewsBot/1.1; +https://gi
 # === FUENTES (tus links) ===
 SOURCES = {
     "venezuela": [
-        "https://www.elnacional.com/",
-        "https://talcualdigital.com/",
-        "https://efectococuyo.com/",
+        "https://www.elnacional.com/venezuela/",
+        "https://talcualdigital.com/noticias/",
+        "hhttps://efectococuyo.com/politica/",
     ],
     "panama": [
         "https://www.prensa.com/",
-        "https://www.laestrella.com.pa/",
+        "https://www.laestrella.com.pa/panama",
     ],
     "dominicana": [
         "https://www.diariolibre.com/rss/portada.xml",
-        "https://listindiario.com/",
-        "https://www.elcaribe.com.do/",
+        "https://listindiario.com/la-republica",
+        "https://www.elcaribe.com.do/seccion/panorama/pais/",
         "https://eldinero.com.do/",
     ],
 }
