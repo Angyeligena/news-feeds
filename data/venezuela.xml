@@ -4,8 +4,38 @@
   <title>Noticias Venezuela</title>
   <link>https://github.com/</link>
   <description>Feed generado automáticamente</description>
-  <lastBuildDate>Sun, 28 Sep 2025 21:15:06 GMT</lastBuildDate>
+  <lastBuildDate>Sun, 28 Sep 2025 21:28:51 GMT</lastBuildDate>
   <generator>news-feeds GitHub Action</generator>
-  <!-- build 2025-09-28T21:15:06.009273Z -->
+  <!-- build 2025-09-28T21:28:51.945117Z -->
+  <item>
+    <title>Principios editoriales</title>
+    <link>https://talcualdigital.com/nosotros/</link>
+    <pubDate>Sun, 28 Sep 2025 21:28:48 GMT</pubDate>
+    <category>talcualdigital.com</category>
+  </item>
+  <item>
+    <title>Manual de estilo</title>
+    <link>https://talcualdigital.com/wp-content/uploads/2023/04/Manual-de-Estilo-TalCual-2023.pdf</link>
+    <pubDate>Sun, 28 Sep 2025 21:28:48 GMT</pubDate>
+    <category>talcualdigital.com</category>
+  </item>
+  <item>
+    <title>Nuestra historia</title>
+    <link>https://talcualdigital.com/la-historia-de-talcual-hitos-y-vivencias-de-un-medio-que-no-se-rinde/</link>
+    <pubDate>Sun, 28 Sep 2025 21:28:48 GMT</pubDate>
+    <category>talcualdigital.com</category>
+  </item>
+  <item>
+    <title>Mariana González dice desconocer el paradero de Rafael Tudares tras ocho meses preso</title>
+    <link>https://talcualdigital.com/mariana-gonzalez-dice-desconocer-el-paradero-de-rafael-tudares-tras-ocho-meses-preso/</link>
+    <pubDate>Sun, 28 Sep 2025 21:28:48 GMT</pubDate>
+    <category>talcualdigital.com</category>
+  </item>
+  <item>
+    <title>Reactivan las sanciones de Naciones Unidas contra Irán por su programa nuclear</title>
+    <link>https://talcualdigital.com/reactivan-las-sanciones-de-naciones-unidas-contra-iran-por-su-programa-nuclear/</link>
+    <pubDate>Sun, 28 Sep 2025 21:28:48 GMT</pubDate>
+    <category>talcualdigital.com</category>
+  </item>
 </channel>
 </rss>
