@@ -1,6 +1,7 @@
 # scripts/build_feeds.py
 # Genera RSS diarios para Venezuela, Panamá y República Dominicana
-# Scraping + RSS nativo (donde haya). Fuerza diffs con <lastBuildDate> y comentario de build.
+# SIN Google News. Scraping + RSS nativo donde exista.
+# Fuerza diffs diarios con <lastBuildDate> y comentario de build.
 
 import os
 import re
@@ -19,6 +20,7 @@ REQUEST_TIMEOUT = 25
 RETRIES = 2
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; AngieNewsBot/1.0; +https://github.com/)"}
 
+# === Fuentes por país (tus links) ===
 SOURCES = {
     "venezuela": [
         "https://www.elnacional.com/",
@@ -32,15 +34,17 @@ SOURCES = {
         "https://www.bloomberglinea.com/latinoamerica/panama/",
     ],
     "dominicana": [
-        "https://www.diariolibre.com/rss/portada.xml",
+        "https://www.diariolibre.com/rss/portada.xml",  # RSS nativo
         "https://listindiario.com/",
         "https://www.elcaribe.com.do/",
         "https://eldinero.com.do/",
     ],
 }
 
+# Límite de ítems por país
 LIMITS = {"venezuela": 10, "panama": 10, "dominicana": 10}
 
+# Selectores por dominio
 SITE_SELECTORS = {
     # Venezuela
     "www.elnacional.com": ["article h2 a", "h3 a", ".headline a"],
@@ -132,8 +136,10 @@ def scrape_site(url: str, limit: int) -> list[dict]:
             if len(items) >= limit * 4: break
         if len(items) >= limit * 4: break
 
+    # Filtro de calidad
     items = [it for it in items if len(it["title"]) >= 25]
 
+    # Fallback si vacío
     if not items:
         for a in soup.select("a[href]"):
             href = a.get("href", "")
@@ -144,6 +150,7 @@ def scrape_site(url: str, limit: int) -> list[dict]:
             items.append({"title": txt, "link": full, "date": datetime.utcnow(), "source": host})
             if len(items) >= limit * 2: break
 
+    # Dedupe
     uniq, out = set(), []
     for it in items:
         key = hashlib.md5((norm_text(it["title"]) + "|" + urlparse(it["link"]).netloc).encode()).hexdigest()
@@ -239,3 +246,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
