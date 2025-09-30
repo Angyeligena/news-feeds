@@ -54,7 +54,7 @@ SOURCE_QUOTAS = {
 }
 
 # Cuota máxima por dominio dentro de cada país (tope duro por source)
-MAX_PER_DOMAIN = 4
+MAX_PER_DOMAIN = 6
 
 # Selectores por dominio (para scraping HTML)
 SITE_SELECTORS = {
