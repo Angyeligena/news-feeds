@@ -1,41 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
 <channel>
-  <title>Noticias Venezuela</title>
+  <title>Noticias Venezuela - Todas las disponibles</title>
   <link>https://github.com/</link>
-  <description>Feed generado automáticamente</description>
-  <lastBuildDate>Wed, 01 Oct 2025 10:13:53 GMT</lastBuildDate>
-  <generator>news-feeds GitHub Action</generator>
-  <!-- build 2025-10-01T10:13:53.868907Z -->
+  <description>Feed con todas las noticias disponibles de Venezuela sin límites</description>
+  <lastBuildDate>Wed, 01 Oct 2025 21:58:40 GMT</lastBuildDate>
+  <generator>simplified-news-scraper</generator>
+  <totalItems>12</totalItems>
+  <!-- build 2025-10-01T21:58:40.035317Z -->
   <item>
-    <title>Venezuela, Cuba y Nicaragua no estÃ¡n invitadas a la X Cumbre de las AmÃ©ricas</title>
-    <link>https://talcualdigital.com/venezuela-cuba-y-nicaragua-no-estan-invitadas-a-la-x-cumbre-de-las-americas/</link>
-    <pubDate>Wed, 01 Oct 2025 10:13:50 GMT</pubDate>
+    <title>Reuters: ExportaciÃ³n petrolera de Venezuela supera el millÃ³n de barriles diarios</title>
+    <link>https://talcualdigital.com/reuters-exportacion-petrolera-de-venezuela-supera-el-millon-de-barriles-diarios/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:36 GMT</pubDate>
     <category>talcualdigital.com</category>
+    <source>talcualdigital.com</source>
   </item>
   <item>
-    <title>Maduro usa de excusa el estado de conmociÃ³n para justificar mÃ¡s represiÃ³n, afirma PJ</title>
-    <link>https://talcualdigital.com/maduro-usa-de-excusa-el-estado-de-conmocion-para-justificar-mas-represion-afirma-pj/</link>
-    <pubDate>Wed, 01 Oct 2025 10:13:50 GMT</pubDate>
+    <title>Dos expertos de la MisiÃ³n ONU sobre Venezuela presentan renuncias y alegan Â«dificultadesÂ»</title>
+    <link>https://talcualdigital.com/dos-expertos-de-la-mision-onu-sobre-venezuela-presentan-renuncias-y-alegan-dificultades/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:36 GMT</pubDate>
     <category>talcualdigital.com</category>
+    <source>talcualdigital.com</source>
   </item>
   <item>
-    <title>Dirigentes larenses exigen informaciÃ³n sobre paradero de Macario GonzÃ¡lez</title>
-    <link>https://talcualdigital.com/dirigentes-larenses-exigen-informacion-sobre-paradero-de-macario-gonzalez/</link>
-    <pubDate>Wed, 01 Oct 2025 10:13:50 GMT</pubDate>
+    <title>EEUU extradita a Chile a cinco supuestos miembros del Tren de Aragua</title>
+    <link>https://talcualdigital.com/eeuu-extradita-a-chile-a-cinco-supuestos-miembros-del-tren-de-aragua/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:36 GMT</pubDate>
     <category>talcualdigital.com</category>
-  </item>
-  <item>
-    <title>RodrÃ­guez: Maduro tiene listo decreto de conmociÃ³n para defender el paÃ­s y para castigar</title>
-    <link>https://talcualdigital.com/rodriguez-maduro-tiene-listo-decreto-de-conmocion-para-defender-la-integridad-del-pais/</link>
-    <pubDate>Wed, 01 Oct 2025 10:13:50 GMT</pubDate>
-    <category>talcualdigital.com</category>
+    <source>talcualdigital.com</source>
   </item>
   <item>
     <title>Cazarrecompensas y redadas: la sombra de la deportaciÃ³n sobre los latinos de Washington</title>
     <link>https://talcualdigital.com/cazarrecompensas-y-redadas-la-sombra-de-la-deportacion-sobre-los-latinos-de-washington/</link>
-    <pubDate>Wed, 01 Oct 2025 10:13:50 GMT</pubDate>
+    <pubDate>Wed, 01 Oct 2025 21:58:36 GMT</pubDate>
     <category>talcualdigital.com</category>
+    <source>talcualdigital.com</source>
+  </item>
+  <item>
+    <title>Guyana insta a un diÃ¡logo entre lÃ­deres de la regiÃ³n sobre despliegue militar de EEUU</title>
+    <link>https://talcualdigital.com/guyana-insta-a-un-dialogo-entre-lideres-de-la-region-sobre-despliegue-militar-de-eeuu/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:36 GMT</pubDate>
+    <category>talcualdigital.com</category>
+    <source>talcualdigital.com</source>
+  </item>
+  <item>
+    <title>Â¿Por quÃ© la Copppal expulsÃ³ al PSUV de sus filas?</title>
+    <link>https://talcualdigital.com/por-que-la-copppal-expulso-al-psuv-de-sus-filas/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:36 GMT</pubDate>
+    <category>talcualdigital.com</category>
+    <source>talcualdigital.com</source>
+  </item>
+  <item>
+    <title>Habitantes de San Juan de los Morros sufren en medio de apagones de hasta 10 horas</title>
+    <link>https://talcualdigital.com/habitantes-de-san-juan-de-los-morros-sufren-en-medio-de-apagones-de-hasta-10-horas/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:36 GMT</pubDate>
+    <category>talcualdigital.com</category>
+    <source>talcualdigital.com</source>
+  </item>
+  <item>
+    <title>Provea condena abuso de estados de excepciÃ³n: solo han servido para aumentar represiÃ³n</title>
+    <link>https://talcualdigital.com/provea-condena-abuso-de-estados-de-excepcion-solo-han-servido-para-aumentar-represion/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:36 GMT</pubDate>
+    <category>talcualdigital.com</category>
+    <source>talcualdigital.com</source>
+  </item>
+  <item>
+    <title>Â«No nos matenÂ»: indÃ­genas marchan por cese de la violencia en frontera colombo-venezolana</title>
+    <link>https://talcualdigital.com/no-nos-maten-indigenas-marchan-por-cese-de-la-violencia-en-frontera-colombo-venezolana/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:36 GMT</pubDate>
+    <category>talcualdigital.com</category>
+    <source>talcualdigital.com</source>
+  </item>
+  <item>
+    <title>Foro Penal contabiliza 838 presos polÃ­ticos hasta el #29Sep: 94 son extranjeros</title>
+    <link>https://talcualdigital.com/foro-penal-contabiliza-838-presos-politicos-hasta-el-29sep-94-son-extranjeros/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:36 GMT</pubDate>
+    <category>talcualdigital.com</category>
+    <source>talcualdigital.com</source>
+  </item>
+  <item>
+    <title>RodrÃ­guez: Maduro tiene listo decreto de conmociÃ³n para defender el paÃ­s y para castigar</title>
+    <link>https://talcualdigital.com/rodriguez-maduro-tiene-listo-decreto-de-conmocion-para-defender-la-integridad-del-pais/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:36 GMT</pubDate>
+    <category>talcualdigital.com</category>
+    <source>talcualdigital.com</source>
+  </item>
+  <item>
+    <title>Dirigentes larenses exigen informaciÃ³n sobre paradero de Macario GonzÃ¡lez</title>
+    <link>https://talcualdigital.com/dirigentes-larenses-exigen-informacion-sobre-paradero-de-macario-gonzalez/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:36 GMT</pubDate>
+    <category>talcualdigital.com</category>
+    <source>talcualdigital.com</source>
   </item>
 </channel>
 </rss>

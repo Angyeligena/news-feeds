@@ -1,65 +1,425 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
 <channel>
-  <title>Noticias Dominicana</title>
+  <title>Noticias Dominicana - Todas las disponibles</title>
   <link>https://github.com/</link>
-  <description>Feed generado automáticamente</description>
-  <lastBuildDate>Wed, 01 Oct 2025 10:13:59 GMT</lastBuildDate>
-  <generator>news-feeds GitHub Action</generator>
-  <!-- build 2025-10-01T10:13:59.821592Z -->
+  <description>Feed con todas las noticias disponibles de Dominicana sin límites</description>
+  <lastBuildDate>Wed, 01 Oct 2025 21:58:50 GMT</lastBuildDate>
+  <generator>simplified-news-scraper</generator>
+  <totalItems>59</totalItems>
+  <!-- build 2025-10-01T21:58:50.157458Z -->
   <item>
-    <title>Andy Rodríguez Durán entrega cartas credenciales al príncipe de Arabia Saudita</title>
-    <link>https://www.diariolibre.com/actualidad/nacional/2025/09/30/andy-rodriguez-duran-entrega-cartas-credenciales-en-arabia-saudita/3262976</link>
-    <pubDate>Wed, 01 Oct 2025 10:13:55 GMT</pubDate>
+    <title>Tras apresamiento de agentes, confían en que habrá justicia por &quot;ejecución&quot; de cinco en Santiago</title>
+    <link>https://www.diariolibre.com/actualidad/nacional/2025/10/01/familiares-esperan-justicia-tras-apresamiento-de-agentes-ejecutaron-5/3264093</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
     <category>www.diariolibre.com</category>
+    <source>www.diariolibre.com</source>
   </item>
   <item>
-    <title>Indotel lanza programa de alfabetización digital para 100,000 personas</title>
-    <link>https://listindiario.com/la-republica/gobierno/20251001/indotel-lanza-programa-alfabetizacion-digital-100-000-personas_876397.html</link>
-    <pubDate>Wed, 01 Oct 2025 10:13:55 GMT</pubDate>
-    <category>listindiario.com</category>
+    <title>Exseminaristas entregan aporte económico a los salesianos</title>
+    <link>https://www.diariolibre.com/actualidad/nacional/2025/10/01/exseminaristas-hacen-aporte-a-los-salesianos/3264059</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>www.diariolibre.com</category>
+    <source>www.diariolibre.com</source>
   </item>
   <item>
-    <title>Un 25% de jóvenes en la frontera RD-Haití está en la categoría de “nini”</title>
-    <link>https://eldinero.com.do/338531/un-25-de-jovenes-en-la-frontera-rd-haiti-esta-en-la-categoria-de-nini/</link>
-    <pubDate>Wed, 01 Oct 2025 10:13:59 GMT</pubDate>
-    <category>eldinero.com.do</category>
+    <title>Gobierno anuncia 40 mil familias fueron integradas a la Ruta de Superación de la Pobreza</title>
+    <link>https://www.diariolibre.com/actualidad/nacional/2025/10/01/integran-a-40-mil-familias-a-la-ruta-de-superacion-de-la-pobreza/3263943</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>www.diariolibre.com</category>
+    <source>www.diariolibre.com</source>
+  </item>
+  <item>
+    <title>Imputado de abusar y estrangular a Jostin llevó la Policía hasta donde estaba el cadáver</title>
+    <link>https://www.diariolibre.com/actualidad/nacional/2025/10/01/agresor-de-jostin-llevo-autoridades-donde-abandono-el-cuerpo/3263926</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>www.diariolibre.com</category>
+    <source>www.diariolibre.com</source>
+  </item>
+  <item>
+    <title>Tres meses de prisión preventiva a hombre acusado de raptar, violar y asesinar al niño Jostin</title>
+    <link>https://www.diariolibre.com/actualidad/nacional/2025/10/01/a-prision-acusado-de-raptar-violar-y-asesinar-al-nino-jostin-peralta/3263604</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>www.diariolibre.com</category>
+    <source>www.diariolibre.com</source>
+  </item>
+  <item>
+    <title>Familia de Jostin Peralta no aceptará menos de 30 años para su violador y asesino, dice su abogado</title>
+    <link>https://www.diariolibre.com/actualidad/nacional/2025/10/01/familia-de-jostin-peralta-no-aceptara-menos-de-30-anos-carcel/3262778</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>www.diariolibre.com</category>
+    <source>www.diariolibre.com</source>
   </item>
   <item>
     <title>Consejo de Seguridad de la ONU aprueba nueva misión en Haití para eliminar a las pandillas</title>
     <link>https://www.diariolibre.com/actualidad/nacional/2025/10/01/el-consejo-de-seguridad-de-la-onu-aprueba-nueva-mision-en-haiti/3263033</link>
-    <pubDate>Wed, 01 Oct 2025 10:13:55 GMT</pubDate>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
     <category>www.diariolibre.com</category>
+    <source>www.diariolibre.com</source>
   </item>
   <item>
-    <title>Tras 12 años, concluyen los trabajos de la Ciudad Sanitaria Luis Eduardo Aybar</title>
-    <link>https://listindiario.com/la-republica/gobierno/20251001/12-anos-concluyen-trabajos-ciudad-sanitaria-luis-eduardo-aybar_876320.html</link>
-    <pubDate>Wed, 01 Oct 2025 10:13:55 GMT</pubDate>
+    <title>Autoridades aeronáuticas investigan aterrizaje de emergencia de un avión en el AILA</title>
+    <link>https://www.diariolibre.com/actualidad/nacional/2025/09/30/autoridades-investigan-aterrizaje-de-emergencia-de-avion-en-aila/3262876</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>www.diariolibre.com</category>
+    <source>www.diariolibre.com</source>
+  </item>
+  <item>
+    <title>Un avión aterriza de emergencia en el AILA; no hay heridos</title>
+    <link>https://www.diariolibre.com/actualidad/nacional/2025/09/30/avion-aterriza-de-emergencia-en-el-aila-no-hay-heridos/3262816</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>www.diariolibre.com</category>
+    <source>www.diariolibre.com</source>
+  </item>
+  <item>
+    <title>Lluvias benefician la presa de Tavera y mejoran el suministro de agua en Santiago</title>
+    <link>https://www.diariolibre.com/actualidad/nacional/2025/09/30/lluvias-benefician-presa-de-tavera-y-suministro-de-agua-en-santiago/3262527</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>www.diariolibre.com</category>
+    <source>www.diariolibre.com</source>
+  </item>
+  <item>
+    <title>Abinader pide apoyo para misión en Haití a Vladimir Putin y Xi Jinping</title>
+    <link>https://listindiario.com/la-republica/20251001/abinader-pide-apoyo-mision-haiti-vladimir-putin-xi-jinping_876458.html</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
     <category>listindiario.com</category>
+    <source>listindiario.com</source>
   </item>
   <item>
-    <title>RD apuesta al procesamiento industrial de la yuca para expandir exportaciones</title>
-    <link>https://eldinero.com.do/338615/rd-apuesta-al-procesamiento-industrial-de-la-yuca-para-expandir-exportaciones/</link>
-    <pubDate>Wed, 01 Oct 2025 10:13:59 GMT</pubDate>
-    <category>eldinero.com.do</category>
+    <title>Supuesta venta de fusil de alto calibre ocasionó muerte de cinco hombres en Santiago</title>
+    <link>https://listindiario.com/la-republica/20251001/supuesta-venta-fusil-alto-calibre-ocasiono-muerte-cinco-hombres-santiago_876456.html</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>listindiario.com</category>
+    <source>listindiario.com</source>
   </item>
   <item>
-    <title>Familia de Yostín Peralta no aceptará menos de 30 años para su violador y asesino, dice su abogado</title>
-    <link>https://www.diariolibre.com/actualidad/nacional/2025/10/01/familia-de-yostin-peralta-no-aceptara-menos-de-30-anos-carcel/3262778</link>
-    <pubDate>Wed, 01 Oct 2025 10:13:55 GMT</pubDate>
-    <category>www.diariolibre.com</category>
+    <title>Apresan hombre que intentó robar en el Hospital Marcelino Vélez</title>
+    <link>https://listindiario.com/la-republica/sector-salud/20251001/apresan-hombre-intento-robar-hospital-marcelino-velez_876439.html</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>listindiario.com</category>
+    <source>listindiario.com</source>
+  </item>
+  <item>
+    <title>Tribunal varía coerción a dos implicados de muerte del niño Gioser Luis Feliz</title>
+    <link>https://listindiario.com/la-republica/20251001/tribunal-varia-coercion-dos-implicados-muerte-nino-gioser-luis_876448.html</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>listindiario.com</category>
+    <source>listindiario.com</source>
+  </item>
+  <item>
+    <title>Embajada de EE.UU. avisa limitaciones en redes y que servicios de visas seguirán según lo permita la situación</title>
+    <link>https://listindiario.com/la-republica/20251001/cierre-federal-gobierno-eeuu-afecta-publicaciones-redes-embajada-pais_876434.html</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>listindiario.com</category>
+    <source>listindiario.com</source>
+  </item>
+  <item>
+    <title>Cada mes en 2024 se robaron más de 400 motocicletas</title>
+    <link>https://listindiario.com/la-republica/20251001/mes-2024-robaron-mas-400-motocicletas_876432.html</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>listindiario.com</category>
+    <source>listindiario.com</source>
+  </item>
+  <item>
+    <title>Investigan aterrizaje de emergencia de aeronave en Aeropuerto de Las Américas</title>
+    <link>https://listindiario.com/la-republica/20250930/investigan-aterrizaje-emergencia-aeronave-aeropuerto-americas_876429.html</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>listindiario.com</category>
+    <source>listindiario.com</source>
+  </item>
+  <item>
+    <title>Apresan a 11 policías vinculados a muerte de cinco hombres en Santiago</title>
+    <link>https://listindiario.com/la-republica/20250930/once-policias-apresados-muerte-cinco-hombres-abatidos-santiago_876393.html</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>listindiario.com</category>
+    <source>listindiario.com</source>
+  </item>
+  <item>
+    <title>Gobierno destinó RD$54 mil millones al pago de pensiones en 2025</title>
+    <link>https://listindiario.com/la-republica/20251001/gobierno-destino-rd-mil-millones-pago-pensiones-2025_876412.html</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>listindiario.com</category>
+    <source>listindiario.com</source>
+  </item>
+  <item>
+    <title>Empresa de equipos médicos niega vinculación irregular con Senasa</title>
+    <link>https://listindiario.com/la-republica/sector-salud/20251001/empresa-equipos-medicos-niega-vinculacion-irregular-senasa_876408.html</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>listindiario.com</category>
+    <source>listindiario.com</source>
+  </item>
+  <item>
+    <title>Cuba acusa a EEUU de imponer a República Dominicana decisión de no invitarla a la Cumbre</title>
+    <link>https://listindiario.com/la-republica/20250930/cuba-acusa-eeuu-imponer-republica-dominicana-decision-invitarla-cumbre_876404.html</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>listindiario.com</category>
+    <source>listindiario.com</source>
+  </item>
+  <item>
+    <title>Abinader indica que RD trabajará por una “acelerada transición” hacia nueva fuerza antipandillas en Haití</title>
+    <link>https://listindiario.com/la-republica/20250930/abinader-indica-rd-trabajara-acelerada-transicion-nueva-fuerza-antipandillas-haiti_876398.html</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>listindiario.com</category>
+    <source>listindiario.com</source>
   </item>
   <item>
     <title>Protocolo migratorio sigue activo en las maternidades</title>
     <link>https://listindiario.com/la-republica/sector-salud/20251001/protocolo-migratorio-sigue-activo-maternidades_876389.html</link>
-    <pubDate>Wed, 01 Oct 2025 10:13:55 GMT</pubDate>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
     <category>listindiario.com</category>
+    <source>listindiario.com</source>
   </item>
   <item>
-    <title>RD podría conquistar el mercado francés con habichuelas “Yacomelo”</title>
-    <link>https://eldinero.com.do/338680/rd-podria-conquistar-el-mercado-frances-con-habichuelas-yacomelo/</link>
-    <pubDate>Wed, 01 Oct 2025 10:13:59 GMT</pubDate>
+    <title>Banco Popular: Socio y promotor estratégico del turismo</title>
+    <link>https://listindiario.com/patrocinados/20250927/banco-popular-socio-promotor-estrategico-turismo_875861.html</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>listindiario.com</category>
+    <source>listindiario.com</source>
+  </item>
+  <item>
+    <title>CCN: nueve décadas de trabajo, pasión, innovación y compromiso</title>
+    <link>https://listindiario.com/patrocinados/20250929/ccn-nueve-decadas-trabajo-pasion-innovacion-compromiso_876154.html</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>listindiario.com</category>
+    <source>listindiario.com</source>
+  </item>
+  <item>
+    <title>CODUE apoya misión de seguridad en Haití, pero llama al Gobierno a mantener la cautela y prepararse</title>
+    <link>https://listindiario.com/la-republica/20251001/codue-apoya-mision-seguridad-haiti-llama-gobierno-mantener-cautela-prepararse_876508.html</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>listindiario.com</category>
+    <source>listindiario.com</source>
+  </item>
+  <item>
+    <title>Encuentran sin vida a hombre que hirió a tiros a su expareja en Moca</title>
+    <link>https://listindiario.com/la-republica/20251001/encuentran-vida-hombre-hirio-tiros-ex-pareja-moca_876466.html</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>listindiario.com</category>
+    <source>listindiario.com</source>
+  </item>
+  <item>
+    <title>Instituto Duartiano juramenta a 24 nuevos miembros de honor</title>
+    <link>https://listindiario.com/la-republica/20251001/instituto-duartiano-juramenta-24-nuevos-miembros-honor_876423.html</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>listindiario.com</category>
+    <source>listindiario.com</source>
+  </item>
+  <item>
+    <title>UNIBE inicia semana de la innovación: IA protagoniza feria universitaria</title>
+    <link>https://listindiario.com/la-republica/20251001/unibe-inicia-semana-innovacion-ia-protagoniza-feria-universitaria_876315.html</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>listindiario.com</category>
+    <source>listindiario.com</source>
+  </item>
+  <item>
+    <title>Aerolínea explica razón de aterrizaje de emergencia de una de sus aeronaves</title>
+    <link>https://listindiario.com/la-republica/20250930/aerolinea-explica-razon-aterrizaje-emergencia-aeronaves_876391.html</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>listindiario.com</category>
+    <source>listindiario.com</source>
+  </item>
+  <item>
+    <title>Avión aterriza de emergencia en Aeropuerto de Las Américas por &quot;falla técnica&quot;</title>
+    <link>https://listindiario.com/la-republica/20250930/avion-aterriza-emergencia-aeropuerto-americas-falla-tecnica_876371.html</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>listindiario.com</category>
+    <source>listindiario.com</source>
+  </item>
+  <item>
+    <title>Gobierno se &quot;regocija&quot; por aprobación de nueva fuerza antipandillas en Haití</title>
+    <link>https://listindiario.com/la-republica/20250930/roberto-alvarez-sobre-resolucion-onu-esfuerzo-diplomatico-dominicano-desempenado-papel-clave_876337.html</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>listindiario.com</category>
+    <source>listindiario.com</source>
+  </item>
+  <item>
+    <title>Este primero de octubre inician las entrevistas presenciales en la Embajada de los EEUU</title>
+    <link>https://listindiario.com/la-republica/20250930/primero-octubre-inician-entrevistas-presenciales-embajada-eeuu_876322.html</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>listindiario.com</category>
+    <source>listindiario.com</source>
+  </item>
+  <item>
+    <title>Miguel Vargas llama al gobierno a tomar acciones concretas para detener “descalabro” de servicios</title>
+    <link>https://listindiario.com/la-republica/20250930/miguel-vargas-llama-gobierno-tomar-acciones-concretas-detener-descalabro-servicios_876317.html</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>listindiario.com</category>
+    <source>listindiario.com</source>
+  </item>
+  <item>
+    <title>Policía Cibernética apresa a mujer que extorsionó a ciudadano por Facebook y WhatsApp</title>
+    <link>https://listindiario.com/la-republica/20250930/policia-cibernetica-apresa-mujer-extorsiono-ciudadano-facebook-whatsapp_876313.html</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:45 GMT</pubDate>
+    <category>listindiario.com</category>
+    <source>listindiario.com</source>
+  </item>
+  <item>
+    <title>En 2024 hubo casi 6,000 denuncias por robos de vehículos en República Dominicana</title>
+    <link>https://eldinero.com.do/338738/en-2024-hubo-casi-6000-denuncias-por-robos-de-vehiculos-en-republica-dominicana/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:50 GMT</pubDate>
     <category>eldinero.com.do</category>
+    <source>eldinero.com.do</source>
+  </item>
+  <item>
+    <title>Crédito externo y donaciones financiaron el 17% de los proyectos de inversión pública en primer semestre en RD</title>
+    <link>https://eldinero.com.do/338737/credito-externo-y-donaciones-financiaron-el-17-de-los-proyectos-de-inversion-publica-en-primer-semestre-en-rd/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:50 GMT</pubDate>
+    <category>eldinero.com.do</category>
+    <source>eldinero.com.do</source>
+  </item>
+  <item>
+    <title>Banco Central reduce tasa de política monetaria en 25 puntos básicos</title>
+    <link>https://eldinero.com.do/338692/banco-central-reduce-tasa-de-politica-monetaria-en-25-puntos-basicos/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:50 GMT</pubDate>
+    <category>eldinero.com.do</category>
+    <source>eldinero.com.do</source>
+  </item>
+  <item>
+    <title>RD apuesta al procesamiento industrial de la yuca para expandir exportaciones</title>
+    <link>https://eldinero.com.do/338615/rd-apuesta-al-procesamiento-industrial-de-la-yuca-para-expandir-exportaciones/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:50 GMT</pubDate>
+    <category>eldinero.com.do</category>
+    <source>eldinero.com.do</source>
+  </item>
+  <item>
+    <title>Digitalización expande a industria de pagos electrónicos en América Latina</title>
+    <link>https://eldinero.com.do/338538/digitalizacion-expande-a-industria-de-pagos-electronicos-en-america-latina/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:50 GMT</pubDate>
+    <category>eldinero.com.do</category>
+    <source>eldinero.com.do</source>
+  </item>
+  <item>
+    <title>Importación de vehículos eléctricos e híbridos gana terreno en últimos cinco años en RD</title>
+    <link>https://eldinero.com.do/338472/importacion-de-vehiculos-electricos-e-hibridos-gana-terreno-en-ultimos-cinco-anos-en-rd/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:50 GMT</pubDate>
+    <category>eldinero.com.do</category>
+    <source>eldinero.com.do</source>
+  </item>
+  <item>
+    <title>La Cepal proyecta a República Dominicana entre economías de mayor crecimiento para 2026</title>
+    <link>https://eldinero.com.do/338425/la-cepal-proyecta-a-republica-dominicana-entre-economias-de-mayor-crecimiento-para-2026/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:50 GMT</pubDate>
+    <category>eldinero.com.do</category>
+    <source>eldinero.com.do</source>
+  </item>
+  <item>
+    <title>Con educación y sanciones se busca transformar la movilidad en República Dominicana</title>
+    <link>https://eldinero.com.do/338432/con-educacion-y-sanciones-se-busca-transformar-la-movilidad-en-republica-dominicana/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:50 GMT</pubDate>
+    <category>eldinero.com.do</category>
+    <source>eldinero.com.do</source>
+  </item>
+  <item>
+    <title>Pérdidas de las EDE suben a 38.2% en primeros siete meses de 2025</title>
+    <link>https://eldinero.com.do/338197/perdidas-de-las-ede-suben-a-38-2-en-primeros-siete-meses-de-2025/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:50 GMT</pubDate>
+    <category>eldinero.com.do</category>
+    <source>eldinero.com.do</source>
+  </item>
+  <item>
+    <title>Escasez de mano de obra limita expansión del café dominicano</title>
+    <link>https://eldinero.com.do/338095/escasez-de-mano-de-obra-limita-expansion-del-cafe-dominicano/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:50 GMT</pubDate>
+    <category>eldinero.com.do</category>
+    <source>eldinero.com.do</source>
+  </item>
+  <item>
+    <title>Zemí Miches Punta Cana: un paraíso all-inclusive para redescubrirte entre cultura y naturaleza</title>
+    <link>https://eldinero.com.do/338795/zemi-miches-punta-cana-un-paraiso-all-inclusive-para-redescubrirte-entre-cultura-y-naturaleza/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:50 GMT</pubDate>
+    <category>eldinero.com.do</category>
+    <source>eldinero.com.do</source>
+  </item>
+  <item>
+    <title>Infotep y Fundación Genera ITM lanzan diplomado especializado en turismo de cruceros en Pedernales</title>
+    <link>https://eldinero.com.do/338051/infotep-y-fundacion-genera-itm-lanzan-diplomado-especializado-en-turismo-de-cruceros-en-pedernales/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:50 GMT</pubDate>
+    <category>eldinero.com.do</category>
+    <source>eldinero.com.do</source>
+  </item>
+  <item>
+    <title>Arajet es reconocida como empresa del año en Sanford-Orlando</title>
+    <link>https://eldinero.com.do/338036/arajet-es-reconocida-como-empresa-del-ano-en-sanford-orlando/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:50 GMT</pubDate>
+    <category>eldinero.com.do</category>
+    <source>eldinero.com.do</source>
+  </item>
+  <item>
+    <title>Más de la mitad de nuevos deudores en RD accede al sistema financiero vía tarjetas de crédito</title>
+    <link>https://eldinero.com.do/338739/mas-de-la-mitad-de-nuevos-deudores-en-rd-accede-al-sistema-financiero-via-tarjetas-de-credito/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:50 GMT</pubDate>
+    <category>eldinero.com.do</category>
+    <source>eldinero.com.do</source>
+  </item>
+  <item>
+    <title>El dólar se cambia este martes para la venta a RD$62.42</title>
+    <link>https://eldinero.com.do/338678/el-dolar-se-cambia-este-martes-para-la-venta-a-rd62-42/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:50 GMT</pubDate>
+    <category>eldinero.com.do</category>
+    <source>eldinero.com.do</source>
+  </item>
+  <item>
+    <title>Ministro Santos: “Sí hay petróleo o gas en territorio dominicano, pero hay que determinar su factibilidad económica”</title>
+    <link>https://eldinero.com.do/338820/ministro-santos-si-hay-petroleo-o-gas-en-territorio-dominicano-pero-hay-que-determinar-su-factibilidad-economica/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:50 GMT</pubDate>
+    <category>eldinero.com.do</category>
+    <source>eldinero.com.do</source>
+  </item>
+  <item>
+    <title>Joel Santos y director del IADC evalúan cooperación estratégica en seguridad energética y minera</title>
+    <link>https://eldinero.com.do/338631/joel-santos-y-director-del-iadc-evaluan-cooperacion-estrategica-en-seguridad-energetica-y-minera/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:50 GMT</pubDate>
+    <category>eldinero.com.do</category>
+    <source>eldinero.com.do</source>
+  </item>
+  <item>
+    <title>Gobierno deja sin variación precios de combustibles</title>
+    <link>https://eldinero.com.do/338505/gobierno-deja-sin-variacion-precios-de-combustibles/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:50 GMT</pubDate>
+    <category>eldinero.com.do</category>
+    <source>eldinero.com.do</source>
+  </item>
+  <item>
+    <title>SIBA Energy avanza en la etapa final de su ciclo combinado</title>
+    <link>https://eldinero.com.do/338398/siba-energy-avanza-en-la-etapa-final-de-su-ciclo-combinado/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:50 GMT</pubDate>
+    <category>eldinero.com.do</category>
+    <source>eldinero.com.do</source>
+  </item>
+  <item>
+    <title>Entidades del sector energía, minería e hidrocarburos participarán Feria Internacional del Libro Santo Domingo</title>
+    <link>https://eldinero.com.do/338310/entidades-del-sector-energia-mineria-e-hidrocarburos-participaran-feria-internacional-del-libro-santo-domingo/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:50 GMT</pubDate>
+    <category>eldinero.com.do</category>
+    <source>eldinero.com.do</source>
+  </item>
+  <item>
+    <title>El petróleo de Texas baja un 0.06%, hasta los US$62.64 el barril</title>
+    <link>https://eldinero.com.do/338084/el-petroleo-de-texas-baja-un-0-06-hasta-los-us62-64-el-barril/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:50 GMT</pubDate>
+    <category>eldinero.com.do</category>
+    <source>eldinero.com.do</source>
+  </item>
+  <item>
+    <title>Ministerio de Energía y Minas obtiene máxima puntuación en transparencia gubernamental</title>
+    <link>https://eldinero.com.do/338063/ministerio-de-energia-y-minas-obtiene-maxima-puntuacion-en-transparencia-gubernamental/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:50 GMT</pubDate>
+    <category>eldinero.com.do</category>
+    <source>eldinero.com.do</source>
+  </item>
+  <item>
+    <title>Un apagón eléctrico afecta operaciones del Aeropuerto las Américas de Santo Domingo</title>
+    <link>https://eldinero.com.do/337972/un-apagon-electrico-afecta-operaciones-del-aeropuerto-las-americas-de-santo-domingo/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:50 GMT</pubDate>
+    <category>eldinero.com.do</category>
+    <source>eldinero.com.do</source>
+  </item>
+  <item>
+    <title>Sargazo afecta operación en AES Andrés</title>
+    <link>https://eldinero.com.do/338174/sargazo-afecta-operacion-en-aes-andres/</link>
+    <pubDate>Wed, 01 Oct 2025 21:58:50 GMT</pubDate>
+    <category>eldinero.com.do</category>
+    <source>eldinero.com.do</source>
   </item>
 </channel>
 </rss>
