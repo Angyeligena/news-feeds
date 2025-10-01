@@ -1,5 +1,5 @@
 # scripts/build_feeds.py
-# Scraper simplificado para obtener todas las noticias disponibles
+# Scraper simplificado para obtener todas las noticias disponibles en XML
 
 import os, re, html, hashlib, traceback
 from datetime import datetime
@@ -189,30 +189,46 @@ def scrape_site(url: str) -> list[dict]:
         log(f"[ERROR] scrape_site({url}) crashed:\n{traceback.format_exc()}")
         return out
 
-# ---------- Output simplificado ----------
-def write_news_data(country: str, items: list[dict]):
+# ---------- Generador XML ----------
+def make_xml(country: str, items: list[dict]) -> str:
+    now_http = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT")
+    build_comment = f"<!-- build {datetime.utcnow().isoformat()}Z -->"
+    esc = lambda s: html.escape(s or "", quote=True)
+    
+    parts = [
+        '<?xml version="1.0" encoding="UTF-8"?>', 
+        '<rss version="2.0">', 
+        '<channel>',
+        f'  <title>Noticias {esc(country.title())} - Todas las disponibles</title>',
+        '  <link>https://github.com/</link>',
+        f'  <description>Feed con todas las noticias disponibles de {esc(country.title())} sin límites</description>',
+        f'  <lastBuildDate>{now_http}</lastBuildDate>',
+        '  <generator>simplified-news-scraper</generator>',
+        f'  <totalItems>{len(items)}</totalItems>',
+        f'  {build_comment}',
+    ]
+    
+    for it in items:
+        parts += [
+            '  <item>',
+            f"    <title>{esc(it['title'])}</title>",
+            f"    <link>{esc(it['link'])}</link>",
+            f"    <pubDate>{it['date'].strftime('%a, %d %b %Y %H:%M:%S GMT')}</pubDate>",
+            f"    <category>{esc(it['domain'])}</category>",
+            f"    <source>{esc(it['source'])}</source>",
+            '  </item>',
+        ]
+    
+    parts += ['</channel>', '</rss>', '']
+    return "\n".join(parts)
+
+def write_xml_feed(country: str, items: list[dict]):
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    
-    # Archivo de texto simple
-    txt_path = os.path.join(OUTPUT_DIR, f"{country}_news.txt")
-    with open(txt_path, "w", encoding="utf-8") as f:
-        f.write(f"=== NOTICIAS {country.upper()} ===\n")
-        f.write(f"Total encontradas: {len(items)}\n")
-        f.write(f"Fecha: {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
-        
-        for i, item in enumerate(items, 1):
-            f.write(f"{i}. {item['title']}\n")
-            f.write(f"   Link: {item['link']}\n")
-            f.write(f"   Fuente: {item['source']}\n\n")
-    
-    # Archivo CSV
-    csv_path = os.path.join(OUTPUT_DIR, f"{country}_news.csv")
-    with open(csv_path, "w", encoding="utf-8") as f:
-        f.write("titulo,link,fuente,fecha\n")
-        for item in items:
-            f.write(f'"{item["title"]}","{item["link"]}","{item["source"]}","{item["date"].isoformat()}"\n')
-    
-    log(f"[OK] Wrote {txt_path} and {csv_path} ({len(items)} items)")
+    path = os.path.join(OUTPUT_DIR, f"{country}.xml")
+    xml = make_xml(country, items)
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        f.write(xml)
+    log(f"[OK] Wrote {path} ({len(items)} items)")
 
 # ---------- Pipeline simplificado ----------
 def generate_country_news(country: str, urls: list[str]):
@@ -241,7 +257,7 @@ def generate_country_news(country: str, urls: list[str]):
             unique_items.append(item)
 
     log(f"[INFO] {country} total unique items: {len(unique_items)}")
-    write_news_data(country, unique_items)
+    write_xml_feed(country, unique_items)
 
 def main():
     for country, urls in SOURCES.items():
