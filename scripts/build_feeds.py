@@ -1,13 +1,12 @@
 # scripts/build_feeds.py
-# Feeds diarios PA/VE/DO SIN Google News.
-# Cambio clave: cuotas por fuente + round-robin para no monopolizar por un solo dominio.
+# Scraper simplificado para obtener todas las noticias disponibles
 
-import os, re, html, hashlib, traceback, random
-from datetime import datetime, timedelta
+import os, re, html, hashlib, traceback
+from datetime import datetime
 from urllib.parse import urlparse, urljoin, urlunparse, parse_qsl, urlencode
 from time import sleep
 
-import requests, feedparser
+import requests
 from bs4 import BeautifulSoup
 
 OUTPUT_DIR = "data"
@@ -15,7 +14,7 @@ REQUEST_TIMEOUT = 25
 RETRIES = 2
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; AngieNewsBot/1.1; +https://github.com/)"}
 
-# === FUENTES (tus links) ===
+# === FUENTES ===
 SOURCES = {
     "venezuela": [
         "https://www.elnacional.com/venezuela/",
@@ -34,35 +33,11 @@ SOURCES = {
     ],
 }
 
-# Límite total por país
-LIMITS = {"venezuela": 15, "panama": 10, "dominicana": 12}
-
-# Cuota específica por fuente
-SOURCE_QUOTAS = {
-    # Venezuela (5 noticias cada una)
-    "https://www.elnacional.com/venezuela/": 5,
-    "https://talcualdigital.com/noticias/": 5,
-    "https://efectococuyo.com/politica/": 5,
-    # Panamá (5 noticias cada una)
-    "https://www.prensa.com/": 5,
-    "https://www.laestrella.com.pa/panama": 5,
-    # Dominicana (3 noticias cada una)
-    "https://www.diariolibre.com/actualidad/nacional": 3,
-    "https://listindiario.com/la-republica": 3,
-    "https://www.elcaribe.com.do/seccion/panorama/pais/": 3,
-    "https://eldinero.com.do/": 3,
-}
-
-# Cuota máxima por dominio dentro de cada país (tope duro por source)
-MAX_PER_DOMAIN = 6
-
-# Selectores por dominio (para scraping HTML)
+# Selectores por dominio
 SITE_SELECTORS = {
-    # Venezuela
     "www.elnacional.com": ["article h2 a", "h3 a", ".headline a"],
     "talcualdigital.com": ["h2.entry-title a", "article h2 a", "div.post-title h2 a"],
     "efectococuyo.com": ["article h2 a", "h2 a[href*='/']"],
-    # Panamá
     "www.prensa.com": [
         "h1 a[href^='https://www.prensa.com/']",
         "h2 a[href^='https://www.prensa.com/']",
@@ -75,29 +50,26 @@ SITE_SELECTORS = {
         "article h2 a[href^='https://www.laestrella.com.pa/']",
         "a[href^='https://www.laestrella.com.pa/']:not([href*='/etiquetas/'])",
     ],
-    # Dominicana
     "listindiario.com": ["h2 a[href]", "h3 a[href]", "article h2 a"],
     "www.elcaribe.com.do": ["h2 a[href]", "article h2 a", "a.post-title[href]"],
     "eldinero.com.do": ["h2 a[href]", "article h2 a", "a.post-title[href]"],
-    # Selectores para Diario Libre - sección Nacional
-"www.diariolibre.com": [
-    # Selectores principales para los títulos de noticias
-    "h3 a[href*='/actualidad/']",  # Títulos principales
-    "h2 a[href*='/actualidad/']",  # Títulos secundarios
-    "article h3 a",                # Artículos con h3
-    "article h2 a",                # Artículos con h2
-    ".noticia h3 a",               # Si tienen clase noticia
-    ".news-item h3 a",             # Si tienen clase news-item
-    "a[href*='/actualidad/']:not([href*='/tag/']):not([href*='/autor/'])",  # Enlaces de actualidad sin tags/autores
-    # Selectores de respaldo más generales
-    "h3 a[href]",                  # Cualquier h3 con enlace
-    "h2 a[href]",                  # Cualquier h2 con enlace
-    "a[href*='/actualidad/']"      # Cualquier enlace de actualidad
-]
+    "www.diariolibre.com": [
+        "h3 a[href*='/actualidad/']",
+        "h2 a[href*='/actualidad/']",
+        "article h3 a",
+        "article h2 a",
+        ".noticia h3 a",
+        ".news-item h3 a",
+        "a[href*='/actualidad/']:not([href*='/tag/']):not([href*='/autor/'])",
+        "h3 a[href]",
+        "h2 a[href]",
+        "a[href*='/actualidad/']"
+    ]
 }
 
 # ---------- Utilidades ----------
-def log(msg: str): print(msg, flush=True)
+def log(msg: str): 
+    print(msg, flush=True)
 
 def clean_url(u: str) -> str:
     try:
@@ -112,8 +84,10 @@ def norm_text(s: str) -> str:
     return re.sub(r"\s+", " ", (s or "")).strip().lower()
 
 def abs_url(base: str, href: str) -> str:
-    if not href: return ""
-    if href.startswith("//"): return "https:" + href
+    if not href: 
+        return ""
+    if href.startswith("//"): 
+        return "https:" + href
     return urljoin(base, href)
 
 def get_html(url: str) -> bytes | None:
@@ -131,34 +105,39 @@ def fetch_html(url: str) -> BeautifulSoup | None:
     c = get_html(url)
     return BeautifulSoup(c, "html.parser") if c else None
 
-# ---------- Scraping/RSS ----------
-def scrape_site(url: str, soft_limit: int) -> list[dict]:
+# ---------- Scraping simplificado ----------
+def scrape_site(url: str) -> list[dict]:
     out: list[dict] = []
     try:
         soup = fetch_html(url)
         if not soup:
             log(f"[WARN] No HTML for {url}")
             return out
+            
         parsed = urlparse(url)
         host, base = parsed.netloc.lower(), f"{parsed.scheme}://{parsed.netloc}/"
         selectors = SITE_SELECTORS.get(host, []) + ["h1 a[href]", "h2 a[href]", "article h2 a"]
 
         seen = set()
         for sel in selectors:
-            hits = 0
             for tag in soup.select(sel):
                 link = tag.get("href")
                 text = tag.get_text(strip=True)
+                
                 if not link:
                     a = tag.find("a", href=True)
                     if a:
                         link = a["href"]
                         if not text:
                             text = a.get_text(strip=True)
+                            
                 if not text or not link:
                     continue
+                    
                 full = abs_url(base, link)
-                if full in seen: continue
+                if full in seen: 
+                    continue
+                    
                 seen.add(full)
                 out.append({
                     "title": text,
@@ -167,211 +146,109 @@ def scrape_site(url: str, soft_limit: int) -> list[dict]:
                     "source": host,
                     "domain": host
                 })
-                hits += 1
-                if len(out) >= soft_limit * 4: break
-            log(f"[INFO] {host} selector '{sel}' → {hits}")
-            if len(out) >= soft_limit * 4: break
 
-        # Filtro calidad
+        log(f"[INFO] {host} selector '{sel}' → {len(out)} total")
+
+        # Filtro básico de calidad (solo títulos muy cortos)
         before = len(out)
-        out = [it for it in out if len(it["title"]) >= 25]
-        log(f"[INFO] {host} filter >=25 chars: {before} → {len(out)}")
+        out = [it for it in out if len(it["title"]) >= 10]
+        log(f"[INFO] {host} filter >=10 chars: {before} → {len(out)}")
 
         # Fallback si vacío
         if not out:
-            fb = 0
             for a in soup.select("a[href]"):
-                href = a.get("href",""); txt=a.get_text(strip=True); full=abs_url(base, href)
-                if urlparse(full).netloc.lower()!=host or len(txt)<35: continue
-                out.append({"title": txt, "link": full, "date": datetime.utcnow(),
-                            "source": host, "domain": host})
-                fb += 1
-                if len(out) >= soft_limit * 2: break
-            log(f"[INFO] {host} fallback anchors → {fb}")
-        # Dedupe dentro de la fuente
+                href = a.get("href","")
+                txt = a.get_text(strip=True)
+                full = abs_url(base, href)
+                
+                if urlparse(full).netloc.lower() != host or len(txt) < 15: 
+                    continue
+                    
+                out.append({
+                    "title": txt, 
+                    "link": full, 
+                    "date": datetime.utcnow(),
+                    "source": host, 
+                    "domain": host
+                })
+
+        # Dedupe por título normalizado
         seenk, dedup = set(), []
         for it in out:
-            key = hashlib.md5((norm_text(it["title"])+"|"+urlparse(it["link"]).netloc).encode()).hexdigest()
-            if key in seenk: continue
+            key = hashlib.md5(norm_text(it["title"]).encode()).hexdigest()
+            if key in seenk: 
+                continue
             seenk.add(key)
             it["link"] = clean_url(it["link"])
             dedup.append(it)
-        return dedup[: soft_limit * 2]
+            
+        log(f"[INFO] {host} final deduped: {len(dedup)} items")
+        return dedup
+        
     except Exception:
         log(f"[ERROR] scrape_site({url}) crashed:\n{traceback.format_exc()}")
         return out
 
-def fetch_rss(url: str, cutoff_utc: datetime, soft_limit: int) -> list[dict]:
-    out: list[dict] = []
-    try:
-        c = get_html(url)
-        if not c:
-            log(f"[WARN] No RSS for {url}")
-            return out
-        feed = feedparser.parse(c)
-        for e in feed.entries[: soft_limit * 6]:  # overfetch
-            title = getattr(e,"title","") or ""
-            link  = getattr(e,"link","") or ""
-            if not title or not link: continue
-            if getattr(e,"published_parsed", None):
-                dt = datetime(*e.published_parsed[:6])
-            elif getattr(e,"updated_parsed", None):
-                dt = datetime(*e.updated_parsed[:6])
-            else:
-                dt = datetime.utcnow()
-            if dt < cutoff_utc: continue
-            dom = urlparse(link).netloc or urlparse(url).netloc
-            out.append({"title": title, "link": clean_url(link), "date": dt,
-                        "source": dom, "domain": dom})
-        log(f"[INFO] RSS {url} → {len(out)} after cutoff")
-        return out
-    except Exception:
-        log(f"[ERROR] fetch_rss({url}) crashed:\n{traceback.format_exc()}")
-        return out
-
-# ---------- Ensamblado con MIX por fuente ----------
-def mix_by_domain(items: list[dict], limit_total: int, max_per_domain: int) -> list[dict]:
-    """
-    1) Dedupe global por (titulo normalizado + dominio)
-    2) Bucket por dominio
-    3) Round-robin entre dominios respetando max_per_domain
-    """
-    # 1) dedupe global
-    seen, pool = set(), []
-    for it in sorted(items, key=lambda x: x["date"], reverse=True):
-        key = hashlib.md5((norm_text(it["title"])+"|"+it["domain"].lower()).encode()).hexdigest()
-        if key in seen: continue
-        seen.add(key)
-        pool.append(it)
-
-    # 2) bucket por dominio
-    buckets = {}
-    for it in pool:
-        buckets.setdefault(it["domain"].lower(), []).append(it)
-
-    # ordena cada bucket por fecha desc
-    for d in buckets: buckets[d].sort(key=lambda x: x["date"], reverse=True)
-
-    # 3) round-robin
-    order = list(buckets.keys())
-    # baraja el orden para evitar siempre el mismo arranque
-    random.shuffle(order)
-    picked = []
-    domain_counts = {d: 0 for d in order}
-    idx = 0
-    while len(picked) < limit_total and order:
-        d = order[idx % len(order)]
-        if buckets[d] and domain_counts[d] < max_per_domain:
-            picked.append(buckets[d].pop(0))
-            domain_counts[d] += 1
-        # Si ese dominio ya no tiene o llegó al tope, bórralo del ciclo
-        if not buckets[d] or domain_counts[d] >= max_per_domain:
-            order.pop(idx % len(order))
-            # no incrementes idx si quitaste el actual
-        else:
-            idx += 1
-    return picked
-
-# ---------- RSS Writer ----------
-def make_rss(country: str, items: list[dict]) -> str:
-    now_http = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT")
-    build_comment = f"<!-- build {datetime.utcnow().isoformat()}Z -->"
-    esc = lambda s: html.escape(s or "", quote=True)
-    parts = [
-        '<?xml version="1.0" encoding="UTF-8"?>', '<rss version="2.0">', '<channel>',
-        f'  <title>Noticias {esc(country.title())}</title>',
-        '  <link>https://github.com/</link>',
-        '  <description>Feed generado automáticamente</description>',
-        f'  <lastBuildDate>{now_http}</lastBuildDate>',
-        '  <generator>news-feeds GitHub Action</generator>',
-        f'  {build_comment}',
-    ]
-    for it in items:
-        parts += [
-            '  <item>',
-            f"    <title>{esc(it['title'])}</title>",
-            f"    <link>{esc(it['link'])}</link>",
-            f"    <pubDate>{it['date'].strftime('%a, %d %b %Y %H:%M:%S GMT')}</pubDate>",
-            # opcional: etiqueta de dominio/origen
-            f"    <category>{esc(it['domain'])}</category>",
-            '  </item>',
-        ]
-    parts += ['</channel>','</rss>','']
-    return "\n".join(parts)
-
-def write_feed(country: str, items: list[dict]):
+# ---------- Output simplificado ----------
+def write_news_data(country: str, items: list[dict]):
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    path = os.path.join(OUTPUT_DIR, f"{country}.xml")
-    xml = make_rss(country, items)
-    with open(path, "w", encoding="utf-8", newline="\n") as f:
-        f.write(xml)
-    log(f"[OK] Wrote {path} ({len(items)} items)")
+    
+    # Archivo de texto simple
+    txt_path = os.path.join(OUTPUT_DIR, f"{country}_news.txt")
+    with open(txt_path, "w", encoding="utf-8") as f:
+        f.write(f"=== NOTICIAS {country.upper()} ===\n")
+        f.write(f"Total encontradas: {len(items)}\n")
+        f.write(f"Fecha: {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+        
+        for i, item in enumerate(items, 1):
+            f.write(f"{i}. {item['title']}\n")
+            f.write(f"   Link: {item['link']}\n")
+            f.write(f"   Fuente: {item['source']}\n\n")
+    
+    # Archivo CSV
+    csv_path = os.path.join(OUTPUT_DIR, f"{country}_news.csv")
+    with open(csv_path, "w", encoding="utf-8") as f:
+        f.write("titulo,link,fuente,fecha\n")
+        for item in items:
+            f.write(f'"{item["title"]}","{item["link"]}","{item["source"]}","{item["date"].isoformat()}"\n')
+    
+    log(f"[OK] Wrote {txt_path} and {csv_path} ({len(items)} items)")
 
-# ---------- Pipeline por país ----------
-def generate_country_feed(country: str, urls: list[str], limit_total: int):
-    log(f"[RUN] Generating {country} (limit {limit_total}, max/domain {MAX_PER_DOMAIN})")
-    items, cutoff = [], datetime.utcnow() - timedelta(days=1)
+# ---------- Pipeline simplificado ----------
+def generate_country_news(country: str, urls: list[str]):
+    log(f"[RUN] Scraping {country} - all available news")
+    all_items = []
 
-    # 1) recolecta por fuente con cuota específica
     for url in urls:
         try:
-            # Usar la cuota específica de la fuente, o un límite por defecto
-            soft_limit = SOURCE_QUOTAS.get(url, 5)
-            if url.endswith(".xml") or "rss" in url.lower() or "feed" in url.lower():
-                got = fetch_rss(url, cutoff, soft_limit)
-            else:
-                got = scrape_site(url, soft_limit)
-            # etiqueta dominio (por si falta)
-            for it in got:
-                it["domain"] = it.get("domain") or urlparse(it["link"]).netloc.lower()
-            # Limitar a la cuota específica de la fuente
-            got = got[:soft_limit]
-            items += got
-            log(f"[INFO] {country} source {url} → {len(got)} items (quota: {soft_limit})")
+            items = scrape_site(url)
+            all_items.extend(items)
+            log(f"[INFO] {country} source {url} → {len(items)} items")
         except Exception:
             log(f"[ERROR] {country} source {url} crashed:\n{traceback.format_exc()}")
 
-    if not items:
-        log(f"[WARN] {country}: no items at all → placeholder")
-        items = [{
-            "title": f"No se pudieron extraer titulares para {country} en este run",
-            "link": "https://example.com/",
-            "date": datetime.utcnow(),
-            "source": "generator",
-            "domain": "generator"
-        }]
+    if not all_items:
+        log(f"[WARN] {country}: no items found")
+        return
 
-    # 2) mezcla justa por dominio (round-robin + tope por dominio)
-    mixed = mix_by_domain(items, limit_total, MAX_PER_DOMAIN)
+    # Dedupe global por título
+    seen_titles = set()
+    unique_items = []
+    for item in all_items:
+        title_key = norm_text(item["title"])
+        if title_key not in seen_titles:
+            seen_titles.add(title_key)
+            unique_items.append(item)
 
-    # si por cualquier motivo quedó corto, rellena con el resto sin tope
-    if len(mixed) < limit_total:
-        log(f"[INFO] {country} mixed shortage: {len(mixed)}/{limit_total}. Backfilling…")
-        # saca los que ya están
-        chosen_ids = set(hashlib.md5((norm_text(x["title"])+"|"+x["domain"]).encode()).hexdigest() for x in mixed)
-        remaining = []
-        for it in sorted(items, key=lambda x: x["date"], reverse=True):
-            key = hashlib.md5((norm_text(it["title"])+"|"+it["domain"]).encode()).hexdigest()
-            if key in chosen_ids: continue
-            remaining.append(it)
-        mixed += remaining[: max(0, limit_total - len(mixed))]
-
-    write_feed(country, mixed[:limit_total])
+    log(f"[INFO] {country} total unique items: {len(unique_items)}")
+    write_news_data(country, unique_items)
 
 def main():
-    random.seed()  # para variar el orden del round-robin
     for country, urls in SOURCES.items():
         try:
-            generate_country_feed(country, urls, LIMITS[country])
+            generate_country_news(country, urls)
         except Exception:
             log(f"[FATAL] {country} crashed:\n{traceback.format_exc()}")
-            write_feed(country, [{
-                "title": f"Error generando {country}",
-                "link": "https://example.com/",
-                "date": datetime.utcnow(),
-                "source": "generator",
-                "domain": "generator"
-            }])
 
 if __name__ == "__main__":
     main()
