@@ -33,38 +33,17 @@ SOURCES = {
     ],
 }
 
-# Selectores por dominio
+# Selectores específicos por URL
 SITE_SELECTORS = {
-    "www.elnacional.com": ["article h2 a", "h3 a", ".headline a"],
-    "talcualdigital.com": ["h2.entry-title a", "article h2 a", "div.post-title h2 a"],
-    "efectococuyo.com": ["article h2 a", "h2 a[href*='/']"],
-    "www.prensa.com": [
-        "h1 a[href^='https://www.prensa.com/']",
-        "h2 a[href^='https://www.prensa.com/']",
-        "article h2 a[href^='https://www.prensa.com/']",
-        "a[href^='https://www.prensa.com/']:not([href*='/tag/']):not([href*='autor'])",
-    ],
-    "www.laestrella.com.pa": [
-        "h1 a[href^='https://www.laestrella.com.pa/']",
-        "h2 a[href^='https://www.laestrella.com.pa/']",
-        "article h2 a[href^='https://www.laestrella.com.pa/']",
-        "a[href^='https://www.laestrella.com.pa/']:not([href*='/etiquetas/'])",
-    ],
-    "listindiario.com": ["h2 a[href]", "h3 a[href]", "article h2 a"],
-    "www.elcaribe.com.do": ["h2 a[href]", "article h2 a", "a.post-title[href]"],
-    "eldinero.com.do": ["h2 a[href]", "article h2 a", "a.post-title[href]"],
-    "www.diariolibre.com": [
-        "h3 a[href*='/actualidad/']",
-        "h2 a[href*='/actualidad/']",
-        "article h3 a",
-        "article h2 a",
-        ".noticia h3 a",
-        ".news-item h3 a",
-        "a[href*='/actualidad/']:not([href*='/tag/']):not([href*='/autor/'])",
-        "h3 a[href]",
-        "h2 a[href]",
-        "a[href*='/actualidad/']"
-    ]
+    "https://www.elnacional.com/venezuela/": ["h2"],
+    "https://efectococuyo.com/politica/": ["h2.entry-wrapper"],
+    "https://talcualdigital.com/noticias/": ["h5"],
+    "https://www.prensa.com/": ["h2"],
+    "https://www.laestrella.com.pa/panama": ["h2 span.priority-content"],
+    "https://www.diariolibre.com/actualidad/nacional": ["h3.text-md.sm\\:text-lg.mb-3"],
+    "https://listindiario.com/la-republica": ["h2.c-article__title"],
+    "https://www.elcaribe.com.do/seccion/panorama/pais/": ["h3.entry-title"],
+    "https://eldinero.com.do/": ["h2.jeg_post_title"],
 }
 
 # ---------- Utilidades ----------
@@ -105,7 +84,7 @@ def fetch_html(url: str) -> BeautifulSoup | None:
     c = get_html(url)
     return BeautifulSoup(c, "html.parser") if c else None
 
-# ---------- Scraping simplificado ----------
+# ---------- Scraping con selectores específicos ----------
 def scrape_site(url: str) -> list[dict]:
     out: list[dict] = []
     try:
@@ -116,21 +95,33 @@ def scrape_site(url: str) -> list[dict]:
             
         parsed = urlparse(url)
         host, base = parsed.netloc.lower(), f"{parsed.scheme}://{parsed.netloc}/"
-        selectors = SITE_SELECTORS.get(host, []) + ["h1 a[href]", "h2 a[href]", "article h2 a"]
+        
+        # Obtener selectores específicos para esta URL
+        selectors = SITE_SELECTORS.get(url, [])
+        
+        if not selectors:
+            log(f"[WARN] No specific selectors for {url}, using fallback")
+            selectors = ["h1 a[href]", "h2 a[href]", "h3 a[href]", "article h2 a"]
 
         seen = set()
         for sel in selectors:
+            log(f"[INFO] Trying selector '{sel}' on {url}")
+            hits = 0
+            
             for tag in soup.select(sel):
-                link = tag.get("href")
+                # Buscar el enlace dentro del elemento o en su padre
+                link = None
                 text = tag.get_text(strip=True)
                 
-                if not link:
-                    a = tag.find("a", href=True)
-                    if a:
-                        link = a["href"]
-                        if not text:
-                            text = a.get_text(strip=True)
-                            
+                # Si el tag tiene href directamente
+                if tag.name == 'a' and tag.get('href'):
+                    link = tag.get('href')
+                else:
+                    # Buscar un enlace dentro del elemento
+                    link_tag = tag.find('a', href=True)
+                    if link_tag:
+                        link = link_tag.get('href')
+                
                 if not text or not link:
                     continue
                     
@@ -146,16 +137,18 @@ def scrape_site(url: str) -> list[dict]:
                     "source": host,
                     "domain": host
                 })
+                hits += 1
 
-        log(f"[INFO] {host} selector '{sel}' → {len(out)} total")
+            log(f"[INFO] {host} selector '{sel}' → {hits} items")
 
-        # Filtro básico de calidad (solo títulos muy cortos)
+        # Filtro básico de calidad
         before = len(out)
         out = [it for it in out if len(it["title"]) >= 10]
         log(f"[INFO] {host} filter >=10 chars: {before} → {len(out)}")
 
-        # Fallback si vacío
+        # Fallback si vacío - buscar cualquier enlace con texto
         if not out:
+            log(f"[INFO] {host} using fallback selectors")
             for a in soup.select("a[href]"):
                 href = a.get("href","")
                 txt = a.get_text(strip=True)
