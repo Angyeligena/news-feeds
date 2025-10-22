@@ -46,6 +46,21 @@ SITE_SELECTORS = {
     "https://eldinero.com.do/": ["h2.jeg_post_title"],
 }
 
+URL_ALLOWED_PREFIXES = {
+    "https://www.prensa.com/": [
+        "https://www.prensa.com/unidad-investigativa/",
+        "https://www.prensa.com/sociedad/",
+        "https://www.prensa.com/politica/",
+    ],
+    "https://www.laestrella.com.pa/panama": [
+        "https://www.laestrella.com.pa/panama/",
+    ],
+    # opcionalmente, dejamos declarada la de RD por consistencia
+    "https://www.elcaribe.com.do/seccion/panorama/pais/": [
+        "https://www.elcaribe.com.do/seccion/panorama/pais/",
+    ],
+}
+
 # ---------- Utilidades ----------
 def log(msg: str): 
     print(msg, flush=True)
@@ -62,12 +77,12 @@ def clean_url(u: str) -> str:
 def norm_text(s: str) -> str:
     return re.sub(r"\s+", " ", (s or "")).strip().lower()
 
-def abs_url(base: str, href: str) -> str:
-    if not href: 
+def abs_url(page_url: str, href: str) -> str:
+    if not href:
         return ""
-    if href.startswith("//"): 
+    if href.startswith("//"):
         return "https:" + href
-    return urljoin(base, href)
+    return urljoin(page_url, href)
 
 def get_html(url: str) -> bytes | None:
     for i in range(RETRIES + 1):
@@ -94,7 +109,7 @@ def scrape_site(url: str) -> list[dict]:
             return out
             
         parsed = urlparse(url)
-        host, base = parsed.netloc.lower(), f"{parsed.scheme}://{parsed.netloc}/"
+        host, base = parsed.netloc.lower()
         
         # Obtener selectores específicos para esta URL
         selectors = SITE_SELECTORS.get(url, [])
@@ -125,8 +140,13 @@ def scrape_site(url: str) -> list[dict]:
                 if not text or not link:
                     continue
                     
-                full = abs_url(base, link)
+                full = abs_url(url, link)
                 if full in seen: 
+                    continue
+
+                # --- filtro por secciones si aplica ---
+                allowed = URL_ALLOWED_PREFIXES.get(url)
+                if allowed and not any(full.startswith(p) for p in allowed):
                     continue
                     
                 seen.add(full)
@@ -152,9 +172,13 @@ def scrape_site(url: str) -> list[dict]:
             for a in soup.select("a[href]"):
                 href = a.get("href","")
                 txt = a.get_text(strip=True)
-                full = abs_url(base, href)
+                full = abs_url(url, href)
                 
                 if urlparse(full).netloc.lower() != host or len(txt) < 15: 
+                    continue
+
+                allowed = URL_ALLOWED_PREFIXES.get(url)
+                if allowed and not any(full.startswith(p) for p in allowed):
                     continue
                     
                 out.append({
